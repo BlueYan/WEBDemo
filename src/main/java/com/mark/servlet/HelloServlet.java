@@ -1,6 +1,7 @@
 package com.mark.servlet;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 /**
@@ -18,7 +19,6 @@ public class HelloServlet implements Servlet {
 
 	public void service(ServletRequest servletRequest, ServletResponse servletResponse)
 			throws ServletException, IOException {
-
 		System.out.println("HelloServlet.service()");
 
 	}
