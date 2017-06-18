@@ -1,6 +1,8 @@
 import com.mark.project.smis.dao.IStudentDao;
 import com.mark.project.smis.dao.impl.StudentDaoImpl;
 import com.mark.project.smis.domain.Student;
+import com.mark.project.smis.page.PageResult;
+import com.mark.project.smis.query.StudentQueryObject;
 import org.junit.Test;
 
 import java.util.List;
@@ -42,4 +44,27 @@ public class SMISTest {
 		stuDao.update(student);
 	}
 
+	@Test
+	public void queryStudent() {
+		List<Student> list = stuDao.query("a", null, null);
+		System.out.println(list);
+	}
+
+	@Test
+	public void testPage() {
+		Integer currentPage = 1;
+		Integer pageSize = 10;
+		PageResult<Student> stuPageResult = stuDao.page(currentPage, pageSize);
+		System.out.println(stuPageResult);
+	}
+
+	@Test
+	public void testPageQuery() {
+		StudentQueryObject stuqo = new StudentQueryObject();
+		stuqo.setName("M");
+		stuqo.setCurrentPage(1);
+		stuqo.setPageSize(10);
+		PageResult<Student> stuResult = stuDao.pageQuery(stuqo);
+		System.out.println(stuResult);
+	}
 }

@@ -11,9 +11,9 @@ import java.sql.ResultSet;
  */
 public class JdbcUtil {
 
-	private static String url = "jdbc:mysql://localhost:3306/test?useSSL=false";
+	private static String url = "jdbc:mysql://localhost:3306/test?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
 	private static String user = "root";
-	private static String pwd = "12345";
+	private static String pwd = "123456";
 
 	static {
 		try {

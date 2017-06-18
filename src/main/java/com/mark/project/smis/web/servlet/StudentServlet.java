@@ -3,6 +3,8 @@ package com.mark.project.smis.web.servlet;
 import com.mark.project.smis.dao.IStudentDao;
 import com.mark.project.smis.dao.impl.StudentDaoImpl;
 import com.mark.project.smis.domain.Student;
+import com.mark.project.smis.page.PageResult;
+import com.mark.project.smis.query.StudentQueryObject;
 import com.mark.project.util.StringUtil;
 
 import javax.servlet.ServletException;
@@ -38,6 +40,12 @@ public class StudentServlet extends HttpServlet {
 			saveOrUpdate(req, resp);
 		} else if ( "edit".equals(cmd) ) {
 			edit(req, resp);
+		} else if ( "query".equals(cmd) ) {
+			query(req, resp);
+		} else if ( "page".equals(cmd) ) {
+			page(req, resp);
+		} else if ( "pageQuery".equals(cmd) ) {
+			pageQuery(req, resp);
 		} else {
 			list(req, resp);
 		}
@@ -117,5 +125,89 @@ public class StudentServlet extends HttpServlet {
 		req.setAttribute("stuList", stuList);
 		//进行页面的跳转 请求跳转不需要加上下文路径 由于URL重定向无法访问WEB-INF文件夹下的资源 所有由request进行跳转
 		req.getRequestDispatcher("/WEB-INF/smis/views/stuList.jsp").forward(req, resp);
+	}
+
+	/**
+	 * 查询
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void page(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String currentPage = req.getParameter("currentPage");
+		Integer currentPage_int = 1;
+		if ( StringUtil.isNotEmpty(currentPage) ) {
+			currentPage_int = Integer.parseInt(currentPage);
+		}
+		//查询所有学生的信息
+		PageResult<Student> stuResult = stuDao.page(currentPage_int, 10);
+		//将数据保存在作用域中
+		req.setAttribute("stuResult", stuResult);
+		//进行页面的跳转 请求跳转不需要加上下文路径 由于URL重定向无法访问WEB-INF文件夹下的资源 所有由request进行跳转
+		req.getRequestDispatcher("/WEB-INF/smis/views/stuPage.jsp").forward(req, resp);
+	}
+
+
+	/**
+	 * 过滤查询
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+     */
+	protected void query(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String name = req.getParameter("name");
+		System.out.println("name = " + name);
+		String minAge = req.getParameter("minAge");
+		String maxAge = req.getParameter("maxAge");
+		Integer minAgeInteger = null;
+		Integer maxAgeInteger = null;
+		if ( StringUtil.isNotEmpty(minAge) ) {
+			minAgeInteger = new Integer(minAge);
+		}
+		if ( StringUtil.isNotEmpty(maxAge) ) {
+			maxAgeInteger = new Integer(maxAge);
+		}
+		List<Student> stuList = stuDao.query(name, minAgeInteger, maxAgeInteger);
+		req.setAttribute("stuList", stuList);
+		//进行页面的跳转 请求跳转不需要加上下文路径 由于URL重定向无法访问WEB-INF文件夹下的资源 所有由request进行跳转
+		req.getRequestDispatcher("/WEB-INF/smis/views/stuList.jsp").forward(req, resp);
+	}
+
+	/**
+	 * 分页高级查询
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+     */
+	protected void pageQuery(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String name = req.getParameter("name");
+		String minAge = req.getParameter("minAge");
+		String maxAge = req.getParameter("maxAge");
+		Integer minAgeInteger = null;
+		Integer maxAgeInteger = null;
+		if ( StringUtil.isNotEmpty(minAge) ) {
+			minAgeInteger = new Integer(minAge);
+		}
+		if ( StringUtil.isNotEmpty(maxAge) ) {
+			maxAgeInteger = new Integer(maxAge);
+		}
+		String currentPage = req.getParameter("currentPage");
+		Integer currentPageIn = 1;
+		if ( StringUtil.isNotEmpty(currentPage) ) {
+			currentPageIn = Integer.parseInt(currentPage);
+		}
+ 		StudentQueryObject stuqo = new StudentQueryObject();
+		stuqo.setName(name);
+		stuqo.setMaxAge(maxAgeInteger);
+		stuqo.setMinAge(minAgeInteger);
+		stuqo.setCurrentPage(currentPageIn);
+		stuqo.setPageSize(10);
+		PageResult<Student> stuResult = stuDao.pageQuery(stuqo);
+		req.setAttribute("stuResult", stuResult);
+		//进行页面的跳转 请求跳转不需要加上下文路径 由于URL重定向无法访问WEB-INF文件夹下的资源 所有由request进行跳转
+		req.getRequestDispatcher("/WEB-INF/smis/views/stuPageQuery.jsp").forward(req, resp);
 	}
 }

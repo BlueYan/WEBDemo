@@ -17,6 +17,19 @@
 
     <a href="/Student?cmd=edit">添加学生</a>
 
+    <br>
+    <form action="/Student?cmd=query" method="post">
+
+        姓名:
+        <input type="text" name="name"/> <br>
+
+        年龄:
+        <input type="number" name="minAge"> - <input type="number" name="maxAge"/> <br>
+
+        <input type="submit" value="提交">
+
+    </form>
+
     <table width="30%" border="1" cellspacing="0" cellpadding="0">
 
         <tr>
