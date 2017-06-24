@@ -15,6 +15,8 @@ import java.util.List;
 @ToString
 public class PageResult<T> {
 
+    private final Integer totalIndexCount = 10; //分页索引总数量
+
     //结果集
     private List<T> listData;
 
@@ -36,6 +38,9 @@ public class PageResult<T> {
     //页面大小 每一页显示多少行
     private Integer pageSize;
 
+    //分页索引
+    private PageIndex pageIndex;
+
     public PageResult(List<T> listData, Integer totalCount, Integer currentPage, Integer pageSize) {
         this.listData = listData;
         this.currentPage = currentPage;
@@ -45,6 +50,7 @@ public class PageResult<T> {
                 ? this.totalCount / this.pageSize : this.totalCount / this.pageSize + 1;
         this.prePage = this.currentPage - 1 == 0 ? this.currentPage - 1 : 1;
         this.nextPage = this.currentPage + 1 <= this.totalPage ? this.currentPage + 1 : this.totalPage;
+        this.pageIndex = PageIndex.getPageIndex(totalIndexCount, currentPage, totalPage);
     }
 
 }

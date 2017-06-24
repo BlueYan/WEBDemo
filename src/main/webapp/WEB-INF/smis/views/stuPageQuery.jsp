@@ -55,7 +55,7 @@
             总${stuResult.totalCount}条数据 当前页: ${stuResult.currentPage} / ${stuResult.totalPage}
             <a href="/Student?cmd=pageQuery&currentPage=1">首页</a>
             <a href="/Student?cmd=pageQuery&currentPage=${stuResult.prePage}">上一页</a>
-            <c:forEach begin="${stu.currentPage}" end="${stu.currentPage + 4}" step="1" var="index">
+            <c:forEach begin="${stuResult.pageIndex.beginIndex}" end="${stuResult.pageIndex.endIndex}" step="1" var="index">
                 <a href="/Student?cmd=pageQuery&currentPage=${index}">${index}</a>
             </c:forEach>
             <a href="/Student?cmd=pageQuery&currentPage=${stuResult.nextPage}">下一页</a>

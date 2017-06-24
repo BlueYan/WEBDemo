@@ -1,5 +1,6 @@
 package com.mark.project.smis.web.servlet;
 
+import com.mark.project.login_shopcart_checkcode.domain.User;
 import com.mark.project.smis.dao.IStudentDao;
 import com.mark.project.smis.dao.impl.StudentDaoImpl;
 import com.mark.project.smis.domain.Student;
@@ -119,6 +120,12 @@ public class StudentServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		User u = (User) req.getSession().getAttribute("USER_IN_SESSION");
+		if ( u == null ) {
+			//表示没有登录 跳转回登录页面
+			resp.sendRedirect("/login_shopcart_checkcode/login.jsp");
+			return;
+		}
 		//查询所有学生的信息
 		List<Student> stuList = stuDao.list();
 		//将数据保存在作用域中

@@ -11,6 +11,10 @@
 <head>
     <title>学生列表</title>
 </head>
+<span style="color: #ff0000ff;">
+    欢迎: ${USER_IN_SESSION.username} 登录
+    <a href="/logout">安全退出</a>
+</span>
 <body>
 
     <h3>学生信息</h3>
