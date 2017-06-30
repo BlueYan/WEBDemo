@@ -20,4 +20,14 @@
     <url-pattern>/hello</url-pattern>
   </servlet-mapping>
 
+
+  <filter>
+    <filter-name>HelloFilter</filter-name>
+    <filter-class>com.mark.servlet.HelloFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HelloFilter</filter-name>
+    <url-pattern>/hello</url-pattern>
+  </filter-mapping>
+
 </web-app>

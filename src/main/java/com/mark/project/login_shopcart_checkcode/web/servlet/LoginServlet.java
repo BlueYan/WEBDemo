@@ -3,6 +3,7 @@ package com.mark.project.login_shopcart_checkcode.web.servlet;
 import com.mark.project.login_shopcart_checkcode.dao.IUserDao;
 import com.mark.project.login_shopcart_checkcode.dao.impl.UserDaoImpl;
 import com.mark.project.login_shopcart_checkcode.domain.User;
+import com.mark.project.util.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,6 +30,19 @@ public class LoginServlet extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String captcha = req.getParameter("captcha");
+		String realCaptcha = (String) req.getSession().getAttribute("RANDOMCODE_IN_SESSION"); //从session中获取到正确的验证码
+		if ( StringUtil.isNotEmpty(captcha) && StringUtil.isNotEmpty(realCaptcha) ) {
+			if (!captcha.equals(realCaptcha)) {
+				req.getSession().setAttribute("errorMsg", "验证码错误");
+				req.getRequestDispatcher("/login_shopcart_checkcode/login.jsp").forward(req, resp);
+				return; //结束方法
+			}
+		} else {
+			req.getSession().setAttribute("errorMsg", "验证码不能为空或验证码已失效.请重新刷新页面");
+			req.getRequestDispatcher("/login_shopcart_checkcode/login.jsp").forward(req, resp);
+			return; //结束方法
+		}
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
 		User user = userDao.login(username, password);

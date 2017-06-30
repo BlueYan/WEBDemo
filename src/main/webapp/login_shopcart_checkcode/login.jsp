@@ -9,10 +9,19 @@
 <html>
 <head>
     <title>Login</title>
-</head>
-<span style="color: #ff0000ff;">${errorMsg}</span>
-<body>
+    <script>
 
+        function changeRandomCode() {
+            //点击刷新验证码
+            var randomCodeImg = document.getElementById("randomCode")
+            //添加时间戳 来欺骗浏览器这是一个新的请求 以便让浏览器不会从缓存中获取原来的值
+            randomCodeImg.src = "/randomCode;" + new Date().getTime();
+        }
+
+    </script>
+</head>
+<body>
+<span style="color: #ff0000ff;">${errorMsg}</span>
     <form action="/login" method="post">
 
         用户名: <input type="text" name="username">
@@ -20,6 +29,10 @@
         <br>
 
         密码: <input type="password" name="password">
+
+        <br>
+
+        验证码: <input type="text" name="captcha"> <img src="/randomCode" id="randomCode" onclick="changeRandomCode()">
 
         <br>
 
