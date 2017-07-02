@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <!-- package标签
+         name: 表示名字 可以随意填写
+         extends: 继承于struts-default
+         namespace: 表示命名空间与action标签的name组成访问的路径
+     -->
+    <package name="struts2Pkg" extends="struts-default" namespace="/">
+        <!-- action标签
+             name:  与namespace组成访问的路径 可以随意填写
+             class: 访问的类全限定名
+             method: 表示要访问class类中的某个方法
+        -->
+        <action name="hello" class="com.mark.project.strut2.action.HelloAction" method="execute">
+            <!-- result标签
+                 name: 要与execute的返回字符串一致
+            -->
+            <result name="hello">
+                <!-- param标签
+                     name=location: 表示跳转本地资源文件
+                -->
+                <param name="location">/el/el.jsp</param>
+            </result>
+
+        </action>
+
+    </package>
+
+</struts>

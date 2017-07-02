@@ -14,8 +14,6 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.Base64;
 
 /**
  * Created by Administrator on 2017/6/28.
@@ -58,7 +56,6 @@ public class TestServlet extends HttpServlet {
 			bb.putInt(0);
 			bb.putInt(requestArray.length);
 			bb.put(requestArray);
-			byte[] reqData = Base64.getEncoder().encode(bb.array());
 			OutputStream os = socket.getOutputStream();
 			os.write(bb.array());
 			os.flush();
