@@ -2,7 +2,7 @@ package com.mark.project.smis.web.servlet;
 
 import com.mark.project.smis.dao.IStudentDao;
 import com.mark.project.smis.dao.impl.StudentDaoImpl;
-import com.mark.project.util.StringUtil;
+import com.mark.project.util.CommonUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +29,7 @@ public class StudentDeleteServlet extends HttpServlet {
 
 		//获取参数ID
 		String id = req.getParameter("id");
-		if ( StringUtil.isNotEmpty(id) ) {
+		if ( CommonUtil.isNotEmpty(id) ) {
 			stuDao.delete(Integer.valueOf(id));
 		}
 		//进行跳转

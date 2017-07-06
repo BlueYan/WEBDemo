@@ -10,6 +10,8 @@ import java.nio.ByteOrder;
 
 /**
  * Created by Administrator on 2017/6/30.
+ * 套接字客户端
+ * 和服务器建立连接
  */
 public class SocketClient {
 
@@ -19,10 +21,14 @@ public class SocketClient {
 
 	private static final Integer PORT = 6789;
 
+	public SocketClient() {
+		onConnection();
+	}
+
 	/**
 	 * 开启链接
 	 */
-	public void onConnection() {
+	private void onConnection() {
 		try {
 			if ( mSocket == null ) {
 				mSocket = new Socket(IP, PORT);
@@ -58,7 +64,7 @@ public class SocketClient {
 			bb.put(data);
 			os = mSocket.getOutputStream();
 			os.write(bb.array());
-			mSocket.shutdownOutput();
+			//mSocket.shutdownOutput();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -88,6 +94,7 @@ public class SocketClient {
 			bos = new ByteArrayOutputStream();
 			byte[] buffer = new byte[1024];
 			int readLen = in.read(buffer);
+			System.out.println("readLen = " + readLen);
 			bos.write(buffer, 0, readLen);
 			ByteBuffer byteBuffer = ByteBuffer.wrap(bos.toByteArray());
 			byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -98,7 +105,7 @@ public class SocketClient {
 			for ( int i = 12, j = 0; i < bos.toByteArray().length; i++, j++ ) {
 				data[j] = byteBuffer.get(i);
 			}
-			mSocket.shutdownInput();
+			//mSocket.shutdownInput();
 			return data;
 		} catch (Exception e) {
 			e.printStackTrace();

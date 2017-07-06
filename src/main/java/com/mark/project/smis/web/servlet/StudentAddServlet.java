@@ -3,7 +3,7 @@ package com.mark.project.smis.web.servlet;
 import com.mark.project.smis.dao.IStudentDao;
 import com.mark.project.smis.dao.impl.StudentDaoImpl;
 import com.mark.project.smis.domain.Student;
-import com.mark.project.util.StringUtil;
+import com.mark.project.util.CommonUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,9 +35,9 @@ public class StudentAddServlet extends HttpServlet {
 		String age = req.getParameter("age");
 		String id = req.getParameter("id"); //获取用户id
 		System.out.println("name = " + name +" age = " + age);
-		if ( StringUtil.isNotEmpty(name) && StringUtil.isNotEmpty(age) ) {
+		if ( CommonUtil.isNotEmpty(name) && CommonUtil.isNotEmpty(age) ) {
 			Student student = new Student(0, name, Integer.parseInt(age));
-			if ( StringUtil.isNotEmpty(id) ) {
+			if ( CommonUtil.isNotEmpty(id) ) {
 				//不为空 表示更新用户
 				student.setId(Integer.parseInt(id));
 				stuDao.update(student);

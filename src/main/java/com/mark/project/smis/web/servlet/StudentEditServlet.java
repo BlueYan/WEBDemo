@@ -3,7 +3,7 @@ package com.mark.project.smis.web.servlet;
 import com.mark.project.smis.dao.IStudentDao;
 import com.mark.project.smis.dao.impl.StudentDaoImpl;
 import com.mark.project.smis.domain.Student;
-import com.mark.project.util.StringUtil;
+import com.mark.project.util.CommonUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +31,7 @@ public class StudentEditServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String id = req.getParameter("id");
-		if (StringUtil.isNotEmpty(id)) {
+		if (CommonUtil.isNotEmpty(id)) {
 			Student stu = stuDao.get(Integer.valueOf(id));
 			//将数据保存到作用域中
 			req.setAttribute("stu", stu);

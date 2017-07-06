@@ -31,4 +31,22 @@
 
     </package>
 
+    <package name="testPkg" extends="struts-default" namespace="/">
+        <action name="test_*" class="com.mark.project.strut2.action.TestAction" method="{1}"></action>
+        <action name="servletapi1" class="com.mark.project.strut2.action.ServletApiAction" method="execute">
+            <result>/index.jsp</result>
+        </action>
+        <action name="servletapi2" class="com.mark.project.strut2.action.ServletApiAction2" method="execute">
+            <result>/index.jsp</result>
+        </action>
+        <action name="servletapi3" class="com.mark.project.strut2.action.ServletApiAction3" method="execute">
+            <result>/index.jsp</result>
+        </action>
+        <action name="param" class="com.mark.project.strut2.action.ParamAction" method="execute">
+        </action>
+        <action name="param2" class="com.mark.project.strut2.action.ParamAction2" method="execute"/>
+        <action name="param3" class="com.mark.project.strut2.action.ParamAction3" method="execute"/>
+        <action name="param4" class="com.mark.project.strut2.action.ParamAction4" method="execute"/>
+    </package>
+
 </struts>

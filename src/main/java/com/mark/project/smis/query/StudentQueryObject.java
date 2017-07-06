@@ -1,6 +1,6 @@
 package com.mark.project.smis.query;
 
-import com.mark.project.util.StringUtil;
+import com.mark.project.util.CommonUtil;
 
 /**
  * Created by Mark on 17/6/17.
@@ -16,7 +16,7 @@ public class StudentQueryObject extends QueryObject {
     private Integer maxAge;
 
     public void handleParams() {
-        if ( StringUtil.isNotEmpty(name) ) {
+        if ( CommonUtil.isNotEmpty(name) ) {
             params.add("%" + name + "%"); //将需要传递到sql语句的参数保存起来
             conditions.add(" name LIKE ? "); //将sql语句中的条件保存起来
         }

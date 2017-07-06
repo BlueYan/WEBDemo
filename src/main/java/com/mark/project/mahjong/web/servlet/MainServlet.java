@@ -19,7 +19,7 @@ public class MainServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		SocketClient client = new SocketClient();
-		client.onConnection();
+		//client.onConnection();
 		ProtoLogin.LoginRequest.Builder builder = ProtoLogin.LoginRequest.newBuilder();
 		builder.setOpenId("Mark8");
 		builder.setNickname("kobe bryant");

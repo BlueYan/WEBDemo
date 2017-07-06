@@ -6,7 +6,7 @@ import com.mark.project.smis.dao.impl.StudentDaoImpl;
 import com.mark.project.smis.domain.Student;
 import com.mark.project.smis.page.PageResult;
 import com.mark.project.smis.query.StudentQueryObject;
-import com.mark.project.util.StringUtil;
+import com.mark.project.util.CommonUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -62,7 +62,7 @@ public class StudentServlet extends HttpServlet {
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//获取参数ID
 		String id = req.getParameter("id");
-		if ( StringUtil.isNotEmpty(id) ) {
+		if ( CommonUtil.isNotEmpty(id) ) {
 			stuDao.delete(Integer.valueOf(id));
 		}
 		//进行跳转 URL重定向
@@ -81,9 +81,9 @@ public class StudentServlet extends HttpServlet {
 		String age = req.getParameter("age");
 		String id = req.getParameter("id"); //获取用户id
 		System.out.println("name = " + name +" age = " + age);
-		if ( StringUtil.isNotEmpty(name) && StringUtil.isNotEmpty(age) ) {
+		if ( CommonUtil.isNotEmpty(name) && CommonUtil.isNotEmpty(age) ) {
 			Student student = new Student(0, name, Integer.parseInt(age));
-			if ( StringUtil.isNotEmpty(id) ) {
+			if ( CommonUtil.isNotEmpty(id) ) {
 				//不为空 表示更新用户
 				student.setId(Integer.parseInt(id));
 				stuDao.update(student);
@@ -104,7 +104,7 @@ public class StudentServlet extends HttpServlet {
 	 */
 	protected void edit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String id = req.getParameter("id");
-		if (StringUtil.isNotEmpty(id)) {
+		if (CommonUtil.isNotEmpty(id)) {
 			Student stu = stuDao.get(Integer.valueOf(id));
 			//将数据保存到作用域中
 			req.setAttribute("stu", stu);
@@ -144,7 +144,7 @@ public class StudentServlet extends HttpServlet {
 	protected void page(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String currentPage = req.getParameter("currentPage");
 		Integer currentPage_int = 1;
-		if ( StringUtil.isNotEmpty(currentPage) ) {
+		if ( CommonUtil.isNotEmpty(currentPage) ) {
 			currentPage_int = Integer.parseInt(currentPage);
 		}
 		//查询所有学生的信息
@@ -170,10 +170,10 @@ public class StudentServlet extends HttpServlet {
 		String maxAge = req.getParameter("maxAge");
 		Integer minAgeInteger = null;
 		Integer maxAgeInteger = null;
-		if ( StringUtil.isNotEmpty(minAge) ) {
+		if ( CommonUtil.isNotEmpty(minAge) ) {
 			minAgeInteger = new Integer(minAge);
 		}
-		if ( StringUtil.isNotEmpty(maxAge) ) {
+		if ( CommonUtil.isNotEmpty(maxAge) ) {
 			maxAgeInteger = new Integer(maxAge);
 		}
 		List<Student> stuList = stuDao.query(name, minAgeInteger, maxAgeInteger);
@@ -195,15 +195,15 @@ public class StudentServlet extends HttpServlet {
 		String maxAge = req.getParameter("maxAge");
 		Integer minAgeInteger = null;
 		Integer maxAgeInteger = null;
-		if ( StringUtil.isNotEmpty(minAge) ) {
+		if ( CommonUtil.isNotEmpty(minAge) ) {
 			minAgeInteger = new Integer(minAge);
 		}
-		if ( StringUtil.isNotEmpty(maxAge) ) {
+		if ( CommonUtil.isNotEmpty(maxAge) ) {
 			maxAgeInteger = new Integer(maxAge);
 		}
 		String currentPage = req.getParameter("currentPage");
 		Integer currentPageIn = 1;
-		if ( StringUtil.isNotEmpty(currentPage) ) {
+		if ( CommonUtil.isNotEmpty(currentPage) ) {
 			currentPageIn = Integer.parseInt(currentPage);
 		}
  		StudentQueryObject stuqo = new StudentQueryObject();

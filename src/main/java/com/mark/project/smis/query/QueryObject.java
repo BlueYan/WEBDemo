@@ -1,7 +1,5 @@
 package com.mark.project.smis.query;
 
-import com.mark.project.util.StringUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
