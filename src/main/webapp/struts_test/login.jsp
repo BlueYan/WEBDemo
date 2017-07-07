@@ -12,11 +12,11 @@
 </head>
 <body>
 
-    <form action="/param4" method="post">
+    <form action="/interceptor/login" method="post">
 
         <input type="text" name="username" placeholder="用户名"> <br>
 
-        <input type="text" name="password" placeholder="密码"> <br>
+        <input type="password" name="password" placeholder="密码"> <br>
 
         <input type="submit" value="提交">
 

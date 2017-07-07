@@ -40,13 +40,59 @@
             <result>/index.jsp</result>
         </action>
         <action name="servletapi3" class="com.mark.project.strut2.action.ServletApiAction3" method="execute">
-            <result>/index.jsp</result>
+            <result type="dispatcher">/index.jsp</result>
         </action>
         <action name="param" class="com.mark.project.strut2.action.ParamAction" method="execute">
         </action>
         <action name="param2" class="com.mark.project.strut2.action.ParamAction2" method="execute"/>
         <action name="param3" class="com.mark.project.strut2.action.ParamAction3" method="execute"/>
         <action name="param4" class="com.mark.project.strut2.action.ParamAction4" method="execute"/>
+    </package>
+
+    <package name="customInterceptorPkg" extends="struts-default" namespace="/interceptor">
+        <!-- 注册拦截器 -->
+        <interceptors>
+            <interceptor name="checkLogin" class="com.mark.project.strut2.interceptor.CheckLoginInterceptor"/>
+            <!-- 配置拦截器栈
+                 将一些要用到的拦截器打包到一起
+            -->
+            <interceptor-stack name="myStack">
+                <interceptor-ref name="checkLogin"/>
+                <!-- defaultStack是框架默认配置的拦截器栈.如果不包含进来,那么就无法使用框架里的拦截器 -->
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <!-- 默认拦截器的引用.
+             因为上面配置了myStack所以默认的拦截器就是checkLogin和defaultStack
+             注意:该标签必须在interceptor和action之间
+        -->
+        <default-interceptor-ref name="myStack"/>
+
+        <!-- 全局视图
+             从拦截器或者是Action中返回的结果都会进行处理
+        -->
+        <global-results>
+            <!-- 登录失败 跳转登录页面 -->
+            <result name="LOGIN_FAIL">/struts_test/login.jsp</result>
+        </global-results>
+
+        <action name="login" class="com.mark.project.strut2.action.LoginAction" method="execute">
+            <!-- 由于配置了myStack. LoginAction也会被checkLogin拦截.所以为了不被拦截,我们不需要使用到checkLogin拦截器
+                 将拦截器的引用设置成默认的defaultStack
+            -->
+            <interceptor-ref name="defaultStack"/>
+            <!-- 登录成功 跳转到另一个Action -->
+            <result name="success" type="redirectAction">main</result>
+        </action>
+
+        <action name="main">
+            <!-- 使用拦截器.表明返回该资源的时候会先经过checkLogin拦截器.
+                 如果没有登录,就返回到登录页面
+            -->
+            <interceptor-ref name="checkLogin"/>
+            <result>/struts_test/welcome.jsp</result>
+        </action>
     </package>
 
 </struts>
