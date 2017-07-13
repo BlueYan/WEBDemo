@@ -47,6 +47,9 @@
         <action name="param2" class="com.mark.project.strut2.action.ParamAction2" method="execute"/>
         <action name="param3" class="com.mark.project.strut2.action.ParamAction3" method="execute"/>
         <action name="param4" class="com.mark.project.strut2.action.ParamAction4" method="execute"/>
+        <action name="value_stack" class="com.mark.project.strut2.action.ValueStackAction" method="execute">
+            <result>/struts_test/value_stack.jsp</result>
+        </action>
     </package>
 
     <package name="customInterceptorPkg" extends="struts-default" namespace="/interceptor">

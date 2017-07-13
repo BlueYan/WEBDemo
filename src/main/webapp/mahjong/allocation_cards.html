@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>jQuery Gridly</title>
+    <link href='/static/css/jquery.gridly.css' rel='stylesheet' type='text/css'>
+    <link href='/static/css/sample.css' rel='stylesheet' type='text/css'>
+    <script src='/static/js/jquery.js' type='text/javascript'></script>
+    <script src='/static/js/jquery.gridly.js' type='text/javascript'></script>
+    <script src='/static/js/sample.js' type='text/javascript'></script>
+    <script src='/static/js/rainbow.js' type='text/javascript'></script>
+    <!--<script>-->
+    <!--var _gaq = _gaq || [];-->
+    <!--_gaq.push(['_setAccount', 'UA-31911059-1']);-->
+    <!--_gaq.push(['_trackPageview']);-->
+
+    <!--(function () {-->
+    <!--var ga = document.createElement('script');-->
+    <!--ga.type = 'text/javascript';-->
+    <!--ga.async = true;-->
+    <!--ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';-->
+    <!--var s = document.getElementsByTagName('script')[0];-->
+    <!--s.parentNode.insertBefore(ga, s);-->
+    <!--})();-->
+    <!--</script>-->
+
+    <script>
+        var mahjongCard = new Array(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6,
+            7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13,
+            14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 21, 21,
+            21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 27,
+            28, 28, 28, 28, 29, 29, 29, 29, 31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33, 34, 34, 34, 34, 35, 35, 35, 35,
+            36, 36, 36, 36, 37, 37, 37, 37);
+        //西方位
+        var westArray = new Array();
+        //东方位
+        var eastArray = new Array();
+        //南方位
+        var southArray = new Array();
+        //北方位
+        var northArray = new Array();
+
+        (function () {
+            $(function () {
+                var brick;
+                brick = "<div class='brick small'><div class='delete'>&times;</div></div>";
+
+                $(document).on("click", ".gridly .delete", function (event) {
+                    var $this;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    $this = $(this);
+                    $this.closest('.brick').remove();
+                    return $('.gridly').gridly('layout');
+                });
+
+                $(document).on("click", ".add", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    $('.gridly').append(brick);
+                    return $('.gridly').gridly();
+                });
+                return $('.gridly').gridly({
+                    cb: result
+                });
+            });
+
+        }).call(this);
+
+        var result = function (target, event, pos, str) {
+            //回调结束 将拖拉的牌值存放到对应的玩家数组上 然后删除牌
+            console.log("cb str = " + str + " pos = " + pos);
+            if ( str == "undefined" ) {
+                //表示没有添加到
+                alert("没有添加到手牌,请重新添加");
+                return;
+            }
+            if (pos == 0) {
+                //西方位
+                if (westArray.length == 13) {
+                    alert("该玩家已经有13张手牌了,不能再添加了!")
+                    return;
+                }
+                var card = str2Card(str);
+                removeCard(card);
+                westArray[westArray.length] = card;
+                onShow(pos, westArray);
+            } else if (pos == 1) {
+                //北方位
+                if (northArray.length == 13) {
+                    alert("该玩家已经有13张手牌了,不能再添加了!")
+                    return;
+                }
+                var card = str2Card(str);
+                removeCard(card);
+                northArray[northArray.length] = card;
+                onShow(pos, northArray);
+            } else if (pos == 2) {
+                //东方位
+                if (eastArray.length == 13) {
+                    alert("该玩家已经有13张手牌了,不能再添加了!")
+                    return;
+                }
+                var card = str2Card(str);
+                removeCard(card);
+                eastArray[eastArray.length] = card;
+                onShow(pos, eastArray);
+            } else if (pos == 3) {
+                if (southArray.length == 13) {
+                    alert("该玩家已经有13张手牌了,不能再添加了!")
+                    return;
+                }
+                var card = str2Card(str);
+                removeCard(card);
+                southArray[southArray.length] = card;
+                onShow(pos, southArray);
+            }
+//            console.log("westArray = " + westArray);
+//            console.log("eastArray = " + eastArray);
+//            console.log("northArray = " + northArray);
+//            console.log("southArray = " + southArray);
+            onDelete(target, event)
+        };
+
+
+        function str2Card(key) {
+            if (key == "w_1") {
+                return 1;
+            } else if (key == "w_2") {
+                return 2;
+            } else if (key == "w_3") {
+                return 3;
+            } else if (key == "w_4") {
+                return 4;
+            } else if (key == "w_5") {
+                return 5;
+            } else if (key == "w_6") {
+                return 6;
+            } else if (key == "w_7") {
+                return 7;
+            } else if (key == "w_8") {
+                return 8;
+            } else if (key == "w_9") {
+                return 9;
+            } else if (key == "tiao_1") {
+                return 11;
+            } else if (key == "tiao_2") {
+                return 12;
+            } else if (key == "tiao_3") {
+                return 13;
+            } else if (key == "tiao_4") {
+                return 14;
+            } else if (key == "tiao_5") {
+                return 15;
+            } else if (key == "tiao_6") {
+                return 16;
+            } else if (key == "tiao_7") {
+                return 17;
+            } else if (key == "tiao_8") {
+                return 18;
+            } else if (key == "tiao_9") {
+                return 19;
+            } else if (key == "tong_1") {
+                return 21;
+            } else if (key == "tong_2") {
+                return 22;
+            } else if (key == "tong_3") {
+                return 23;
+            } else if (key == "tong_4") {
+                return 24;
+            } else if (key == "tong_5") {
+                return 25;
+            } else if (key == "tong_6") {
+                return 26;
+            } else if (key == "tong_7") {
+                return 27;
+            } else if (key == "tong_8") {
+                return 28;
+            } else if (key == "tong_9") {
+                return 29;
+            } else if (key == "dong") {
+                return 31;
+            } else if (key == "nan") {
+                return 32;
+            } else if (key == "xi") {
+                return 33;
+            } else if (key == "bei") {
+                return 34;
+            } else if (key == "zhong") {
+                return 35;
+            } else if (key == "fa") {
+                return 36;
+            } else if (key == "bai") {
+                return 37;
+            }
+        }
+
+        function card2Str(key) {
+            if (key == 1) {
+                return "一万";
+            } else if (key == 2) {
+                return "二万";
+            } else if (key == 3) {
+                return "三万";
+            } else if (key == 4) {
+                return "四万";
+            } else if (key == 5) {
+                return "五万";
+            } else if (key == 6) {
+                return "六万";
+            } else if (key == 7) {
+                return "七万";
+            } else if (key == 8) {
+                return "八万";
+            } else if (key == 9) {
+                return "九万";
+            } else if (key == 11) {
+                return "一条";
+            } else if (key == 12) {
+                return "二条";
+            } else if (key == 13) {
+                return "三条";
+            } else if (key == 14) {
+                return "四条";
+            } else if (key == 15) {
+                return "五条";
+            } else if (key == 16) {
+                return "六条";
+            } else if (key == 17) {
+                return "七条";
+            } else if (key == 18) {
+                return "八条";
+            } else if (key == 19) {
+                return "九条";
+            } else if (key == 21) {
+                return "一筒";
+            } else if (key == 22) {
+                return "二筒";
+            } else if (key == 23) {
+                return "三筒";
+            } else if (key == 24) {
+                return "四筒";
+            } else if (key == 25) {
+                return "五筒";
+            } else if (key == 26) {
+                return "六筒";
+            } else if (key == 27) {
+                return "七筒";
+            } else if (key == 28) {
+                return "八筒";
+            } else if (key == 29) {
+                return "九筒";
+            } else if (key == 31) {
+                return "东";
+            } else if (key == 32) {
+                return "南";
+            } else if (key == 33) {
+                return "西";
+            } else if (key == 34) {
+                return "北";
+            } else if (key == 35) {
+                return "中";
+            } else if (key == 36) {
+                return "发";
+            } else if (key == 37) {
+                return "白";
+            }
+        }
+
+        //移除桌面上的牌
+        function removeCard(card) {
+            for ( var i = 0; i < mahjongCard.length; i++ ) {
+                if ( card == mahjongCard[i] ) {
+                    //表示移除的牌和桌面上的牌一致
+                    mahjongCard[i] = 0; //重置为0
+                    return;
+                }
+            }
+        }
+
+        /**
+         * 删除所选的牌
+         * @param target
+         * @param event
+         * @returns {*|jQuery}
+         */
+        function onDelete(target, event) {
+            var $this;
+            event.preventDefault();
+            event.stopPropagation();
+            $this = $(target);
+            $this.closest('.brick').remove();
+            return $('.gridly').gridly('layout');
+        }
+
+        // 页面上显示四个方位的手牌
+        function onShow(pos, array) {
+            var font;
+            var str = "";
+            if (pos == 0) {
+                font = document.getElementById("west");
+            } else if (pos == 1) {
+                font = document.getElementById("north");
+            } else if (pos == 2) {
+                font = document.getElementById("east");
+            } else {
+                font = document.getElementById("south");
+            }
+            array.sort(function (a, b) {
+                return a-b; //从小到大排序
+            });
+            for (var i = 0; i < array.length; i++) {
+                str += card2Str(array[i]) + ", ";
+            }
+            //console.log("font = " + font + " str = " + str);
+            font.textContent = str;
+        }
+
+        /**
+         * 获取四个玩家以及剩余的牌.并且转成json数组
+         *
+         */
+        function onGetAllCard() {
+            var cards = new Array();
+            var index = 0;
+            //东家
+            for( var i = 0; i < eastArray.length; i++ ) {
+                cards[index++] = eastArray[i];
+            }
+            //南
+            for ( var i = 0; i < southArray.length; i++ ) {
+                cards[index++] = southArray[i];
+            }
+            //西
+            for ( var i = 0; i < westArray.length; i++ ) {
+                cards[index++] = westArray[i];
+            }
+            //北
+            for ( var i = 0; i < northArray.length; i++ ) {
+                cards[index++] = northArray[i];
+            }
+            for ( var i = 0; i < mahjongCard.length; i++ ) {
+                if ( mahjongCard[i] != 0 ) {
+                    cards[index++] = mahjongCard[i];
+                }
+            }
+            return JSON.stringify(cards);
+        }
+
+        /**
+         * ajax请求go接口
+         * 实现方案: 跨域 jsonp
+         * 注意: 注意定义jsonp和jsonpCallback.服务端返回数据必须是jsonp格式
+         *      例如: onSuccess({json字符串})
+         */
+        function onSave() {
+            var hostUrl = onGetServerUrl();
+            var roomId = document.getElementById("roomId").value;
+            var cards = onGetAllCard();
+            var url = "http://" + hostUrl + ":8000/allocation_card";
+            console.log("url = " + url + " roomId = " + roomId + " cards = " + cards);
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8000/allocation_card",
+                data: {"roomId" : roomId, "cards" : cards},
+                dataType: "jsonp",
+                async: true,
+                jsonp: "callback",
+                jsonpCallback: "onSuccess",
+                success: function (data) {
+                    console.log("data = " + data.code);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("request = " + XMLHttpRequest.status);
+                    console.log("error textStatus = " + textStatus + " errorThrown = " + errorThrown);
+                }
+            });
+        }
+
+        /**
+         * 获取所选的服务器地址
+         * @returns {*}
+         */
+        function onGetServerUrl() {
+            var urlRadios = document.getElementsByName("url");
+            var value;
+            for ( radio in urlRadios ) {
+                if ( urlRadios[radio].checked ) {
+                    value = urlRadios[radio].value;
+                    break;
+                }
+            }
+            return value;
+        }
+
+    </script>
+</head>
+<body>
+<div class=" show">
+    西方位玩家手牌:
+    <font id="west" name="west" style="top: 20px;"></font>
+
+    <br>
+
+    北方位玩家手牌:
+    <font id="north" name="north" style="top: 20px;"></font>
+
+    <br>
+
+    东方位玩家手牌:
+    <font id="east" name="east" style="top: 20px;"></font>
+
+    <br>
+
+    南方位玩家手牌:
+    <font id="south" name="south" style="top: 20px;"></font>
+
+    <br>
+
+    输入房间号:<input id="roomId" name="roomId" type="number"/> <br>
+
+    访问地址: <br>
+    <input type="radio" id="url1" name="url" value="192.168.0.200" checked = "true"/>192.168.0.200 <br>
+    <input type="radio" id="url2" name="url" value="192.168.0.115"/>192.168.0.115 <br>
+    <input type="radio" id="url3" name="url" value="120.24.178.135"/>120.24.178.135
+
+    <br>
+
+    <button id="save" name="save" onclick="onSave()">保存</button>
+
+</div>
+
+<div class='content'>
+
+
+    <div class="pos">
+        <!-- left 470 + 80 top 80 + 150 -->
+        <div class="pos EW" style="float: left; text-align: center; line-height: 150px;" id="div1">西</div>
+
+        <div class="pos SN" style="left: 50%; text-align: center; line-height: 80px; transform: translate(-50%, -50%);">
+            南
+        </div>
+
+        <div class="pos SN"
+             style="left: 50%; top: 150px; text-align: center; line-height: 80px; transform: translate(-50%, -50%);">北
+        </div>
+
+        <div class="pos EW" style="float: right; text-align: center; line-height: 150px;">东</div>
+    </div>
+
+    <section class='example'>
+        <div class='gridly'>
+            <!-- 一万 -->
+            <div class='brick small' name="w_1">
+                <img class="brick img" src="/static/images/w_1.png" name="w_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_1.png" name="w_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_1.png" name="w_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_1.png" name="w_1">
+            </div>
+            <!-- 二万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_2.png" name="w_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_2.png" name="w_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_2.png" name="w_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_2.png" name="w_2">
+            </div>
+            <!-- 三万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_3.png" name="w_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_3.png" name="w_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_3.png" name="w_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_3.png" name="w_3">
+            </div>
+            <!-- 4万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_4.png" name="w_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_4.png" name="w_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_4.png" name="w_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_4.png" name="w_4">
+            </div>
+            <!-- 5万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_5.png" name="w_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_5.png" name="w_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_5.png" name="w_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_5.png" name="w_5">
+            </div>
+            <!-- 6万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_6.png" name="w_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_6.png" name="w_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_6.png" name="w_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_6.png" name="w_6">
+            </div>
+            <!-- 7万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_7.png" name="w_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_7.png" name="w_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_7.png" name="w_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_7.png" name="w_7">
+            </div>
+            <!-- 8万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_8.png" name="w_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_8.png" name="w_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_8.png" name="w_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_8.png" name="w_8">
+            </div>
+            <!-- 9万 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_9.png" name="w_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_9.png" name="w_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_9.png" name="w_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/w_9.png" name="w_9">
+            </div>
+
+            <!-- 一条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_1.png" name="tiao_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_1.png" name="tiao_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_1.png" name="tiao_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_1.png" name="tiao_1">
+            </div>
+
+            <!-- 2条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_2.png" name="tiao_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_2.png" name="tiao_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_2.png" name="tiao_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_2.png" name="tiao_2">
+            </div>
+
+            <!-- 3条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_3.png" name="tiao_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_3.png" name="tiao_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_3.png" name="tiao_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_3.png" name="tiao_3">
+            </div>
+
+            <!-- 4条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_4.png" name="tiao_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_4.png" name="tiao_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_4.png" name="tiao_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_4.png" name="tiao_4">
+            </div>
+
+            <!-- 5条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_5.png" name="tiao_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_5.png" name="tiao_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_5.png" name="tiao_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_5.png" name="tiao_5">
+            </div>
+
+            <!-- 6条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_6.png" name="tiao_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_6.png" name="tiao_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_6.png" name="tiao_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_6.png" name="tiao_6">
+            </div>
+
+            <!-- 7条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_7.png" name="tiao_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_7.png" name="tiao_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_7.png" name="tiao_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_7.png" name="tiao_7">
+            </div>
+
+            <!-- 8条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_8.png" name="tiao_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_8.png" name="tiao_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_8.png" name="tiao_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_8.png" name="tiao_8">
+            </div>
+
+            <!-- 9条 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_9.png" name="tiao_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_9.png" name="tiao_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_9.png" name="tiao_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tiao_9.png" name="tiao_9">
+            </div>
+
+            <!-- 一筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_1.png" name="tong_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_1.png" name="tong_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_1.png" name="tong_1">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_1.png" name="tong_1">
+            </div>
+
+            <!-- 2筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_2.png" name="tong_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_2.png" name="tong_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_2.png" name="tong_2">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_2.png" name="tong_2">
+            </div>
+
+            <!-- 3筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_3.png" name="tong_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_3.png" name="tong_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_3.png" name="tong_3">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_3.png" name="tong_3">
+            </div>
+
+            <!-- 4筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_4.png" name="tong_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_4.png" name="tong_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_4.png" name="tong_4">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_4.png" name="tong_4">
+            </div>
+
+            <!-- 5筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_5.png" name="tong_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_5.png" name="tong_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_5.png" name="tong_5">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_5.png" name="tong_5">
+            </div>
+
+            <!-- 6筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_6.png" name="tong_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_6.png" name="tong_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_6.png" name="tong_6">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_6.png" name="tong_6">
+            </div>
+
+            <!-- 7筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_7.png" name="tong_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_7.png" name="tong_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_7.png" name="tong_7">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_7.png" name="tong_7">
+            </div>
+
+            <!-- 8筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_8.png" name="tong_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_8.png" name="tong_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_8.png" name="tong_8">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_8.png" name="tong_8">
+            </div>
+
+            <!-- 9筒 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_9.png" name="tong_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_9.png" name="tong_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_9.png" name="tong_9">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/tong_9.png" name="tong_9">
+            </div>
+
+            <!-- 东 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/dong.png" name="dong">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/dong.png" name="dong">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/dong.png" name="dong">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/dong.png" name="dong">
+            </div>
+
+            <!-- 南 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/nan.png" name="nan">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/nan.png" name="nan">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/nan.png" name="nan">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/nan.png" name="nan">
+            </div>
+
+            <!-- 西 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/xi.png" name="xi">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/xi.png" name="xi">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/xi.png" name="xi">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/xi.png" name="xi">
+            </div>
+
+            <!-- 北 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bei.png" name="bei">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bei.png" name="bei">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bei.png" name="bei">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bei.png" name="bei">
+            </div>
+
+            <!-- 中 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/zhong.png" name="zhong">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/zhong.png" name="zhong">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/zhong.png" name="zhong">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/zhong.png" name="zhong">
+            </div>
+
+            <!-- 发 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/fa.png" name="fa">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/fa.png" name="fa">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/fa.png" name="fa">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/fa.png" name="fa">
+            </div>
+
+            <!-- 白 -->
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bai.png" name="bai">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bai.png" name="bai">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bai.png" name="bai">
+            </div>
+            <div class='brick small'>
+                <img class="brick img" src="/static/images/bai.png" name="bai">
+            </div>
+
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

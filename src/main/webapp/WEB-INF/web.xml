@@ -5,6 +5,28 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
 
+  <!-- 配置struts2 -->
+  <!--<filter>-->
+    <!--<filter-name>struts2</filter-name>-->
+    <!--<filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>-->
+  <!--</filter>-->
+
+  <!--<filter-mapping>-->
+    <!--<filter-name>struts2</filter-name>-->
+    <!--<url-pattern>/login</url-pattern>-->
+  <!--</filter-mapping>-->
+
+  <!--<filter>-->
+    <!--<filter-name>HelloFilter</filter-name>-->
+    <!--<filter-class>com.mark.servlet.HelloFilter</filter-class>-->
+  <!--</filter>-->
+  <!--<filter-mapping>-->
+    <!--<filter-name>HelloFilter</filter-name>-->
+    <!--<url-pattern>/hello</url-pattern>-->
+  <!--</filter-mapping>-->
+
+
+
   <!-- 配置对应的Servlet信息 -->
   <servlet>
     <servlet-name>HelloServlet</servlet-name>
@@ -21,26 +43,6 @@
   </servlet-mapping>
 
 
-  <filter>
-    <filter-name>HelloFilter</filter-name>
-    <filter-class>com.mark.servlet.HelloFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>HelloFilter</filter-name>
-    <url-pattern>/hello</url-pattern>
-  </filter-mapping>
-
-
-  <!-- 配置struts2 -->
-  <filter>
-    <filter-name>struts2</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>struts2</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
 
 
 </web-app>
