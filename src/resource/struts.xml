@@ -50,6 +50,7 @@
         <action name="value_stack" class="com.mark.project.strut2.action.ValueStackAction" method="execute">
             <result>/struts_test/value_stack.jsp</result>
         </action>
+        <action name="validate" class="com.mark.project.strut2.action.ValidateAction" method="list"/>
     </package>
 
     <package name="customInterceptorPkg" extends="struts-default" namespace="/interceptor">
@@ -96,6 +97,15 @@
             <interceptor-ref name="checkLogin"/>
             <result>/struts_test/welcome.jsp</result>
         </action>
+    </package>
+
+
+    <package name="employeeMSPkg" extends="struts-default" namespace="/emp">
+
+        <action name="list" class="com.mark.project.employeeMS.web.action.EmployeeAction" method="list">
+            <result>/WEB-INF/empms/views/list.jsp</result>
+        </action>
+
     </package>
 
 </struts>
