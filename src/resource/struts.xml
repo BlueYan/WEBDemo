@@ -103,7 +103,29 @@
     <package name="employeeMSPkg" extends="struts-default" namespace="/emp">
 
         <action name="list" class="com.mark.project.employeeMS.web.action.EmployeeAction" method="list">
-            <result>/WEB-INF/empms/views/list.jsp</result>
+            <result name="success" type="dispatcher">/WEB-INF/empms/views/list.jsp</result>
+        </action>
+
+        <action name="delete" class="com.mark.project.employeeMS.web.action.EmployeeAction" method="delete">
+            <result name="list" type="redirectAction">
+                /emp/list
+            </result>
+
+        </action>
+
+        <action name="saveOrUpdate" class="com.mark.project.employeeMS.web.action.EmployeeAction" method="saveOrUpdate">
+            <result name="list" type="redirectAction">
+                /emp/list
+            </result>
+            <result name="input">
+                /WEB-INF/empms/views/edit.jsp
+            </result>
+        </action>
+
+        <action name="input" class="com.mark.project.employeeMS.web.action.EmployeeAction" method="input">
+            <result name="input" type="dispatcher">
+                /WEB-INF/empms/views/edit.jsp
+            </result>
         </action>
 
     </package>

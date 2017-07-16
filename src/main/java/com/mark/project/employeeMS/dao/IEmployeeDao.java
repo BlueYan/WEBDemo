@@ -1,6 +1,8 @@
 package com.mark.project.employeeMS.dao;
 
 import com.mark.project.employeeMS.domain.Employee;
+import com.mark.project.employeeMS.page.PageResult;
+import com.mark.project.employeeMS.query.EmployeeQuery;
 
 import java.util.List;
 
@@ -44,4 +46,17 @@ public interface IEmployeeDao {
 	 */
 	List<Employee> list();
 
+	/**
+	 * 高级查询
+	 * @param query
+	 * @return
+     */
+	List<Employee> query(EmployeeQuery query);
+
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+     */
+	PageResult<Employee> pageQuery(EmployeeQuery query);
 }

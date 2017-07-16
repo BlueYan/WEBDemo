@@ -1,7 +1,6 @@
-package com.mark.project.smis.page;
+package com.mark.project.employeeMS.page;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -14,7 +13,6 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
-@NoArgsConstructor
 public class PageResult<T> {
 
     private final Integer totalIndexCount = 10; //分页索引总数量
@@ -50,7 +48,7 @@ public class PageResult<T> {
         this.pageSize = pageSize;
         this.totalPage = this.totalCount % this.pageSize == 0
                 ? this.totalCount / this.pageSize : this.totalCount / this.pageSize + 1;
-        this.prePage = this.currentPage - 1 == 0 ? this.currentPage - 1 : 1;
+        this.prePage = this.currentPage - 1 != 0 ? this.currentPage - 1 : 1;
         this.nextPage = this.currentPage + 1 <= this.totalPage ? this.currentPage + 1 : this.totalPage;
         this.pageIndex = PageIndex.getPageIndex(totalIndexCount, currentPage, totalPage);
     }
