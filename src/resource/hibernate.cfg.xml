@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!--
+    1.配置连接数据库相关的属性
+    2.管理对应的映射文件
+-->
+<hibernate-configuration>
+    <session-factory>
+        <mapping resource="hbm/User.hbm.xml"/>
+        <mapping resource="hbm/Employee.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

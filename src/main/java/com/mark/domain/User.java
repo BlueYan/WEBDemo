@@ -52,6 +52,10 @@ public class User {
         this.soce = soce;
     }
 
+    private User() {
+
+    }
+
     public Map<String, String> getMap() {
         map.put("name", "mark");
         map.put("name.nickname", "earth");
