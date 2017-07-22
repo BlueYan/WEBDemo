@@ -19,7 +19,7 @@ public class HibernateUtil {
 		sf = cfg.buildSessionFactory(); //创建SessionFactory对象
 	}
 
-	public static Session getSeesion() {
+	public static Session getSession() {
 		return sf.openSession(); //测试时候用该方法
 
 		//return sf.getCurrentSession(); //开发的时候用该方法

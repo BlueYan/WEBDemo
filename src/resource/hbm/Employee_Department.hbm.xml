@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.mark.project.hibernateDemo.mapping_relation.domain">
+
+    <!-- many方的对象 -->
+    <class name="Employee" table="employee">
+        <id name="id" column="eid">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="ename"/>
+        <!-- 多对一映射 -->
+        <many-to-one name="dept" column="dept_id" class="Department"/>
+    </class>
+
+
+    <!-- one方对象 -->
+    <class name="Department" table="dept">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="name"/>
+    </class>
+    
+</hibernate-mapping>

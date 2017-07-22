@@ -8,7 +8,8 @@
 -->
 <hibernate-configuration>
     <session-factory>
-        <mapping resource="hbm/User.hbm.xml"/>
-        <mapping resource="hbm/Employee.hbm.xml"/>
+        <!--<mapping resource="hbm/User.hbm.xml"/>-->
+        <!--<mapping resource="hbm/Employee.hbm.xml"/>-->
+        <mapping resource="hbm/Employee_Department.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
