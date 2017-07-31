@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!--
+    多对多双向映射
+-->
+<hibernate-mapping package="com.mark.project.hibernateDemo.many2many.domain">
+
+    <!-- many方的对象 Student -->
+    <class name="Student" table="t_student">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="SName" column="sName"/>
+        <!--
+            一个学生可以拥有多个老师。所以从学生的角度看就是学生对老师是一对多的关系
+            在Student实体类中有存放教师的集合list。在配置的时候用<bag></bag>标签配置
+            由于是多对多的关系，需要中间表来维护学生和教师的关系。我们要指定一张表来存放学生和教师的主键
+        -->
+        <bag name="teachers" table="t_stu_teach">
+            <!--
+                只从学生的角度看与老师的关系就是一对多的关系。
+                所以这里的key就是学生的外键在中间表中的列名。(但是整体是多对多关系)
+            -->
+            <key column="stu_id"/>
+            <!--
+                class表示集合中对应的实体类
+                column表示教师在中间表中所对应的外键名称，同时要与下面的配置的Teacher中的
+                bag节点中的key column的名字对应.
+            -->
+            <many-to-many class="Teacher" column="teach_id"/>
+        </bag>
+    </class>
+
+
+    <!-- many方对象 Teacher -->
+    <class name="Teacher" table="t_teacher">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="TName" column="tName"/>
+        <!--
+            一个教师可以拥有多个学生。所以从教师的角度去看，就是教师对学生是一对多的关系
+            在Teacher实体类中有存放学生的集合list。在配置的时候使用<bag></bag>标签配置
+            inverse：必须让其中一方放弃维护的权限，不然会出现重复的数据
+        -->
+        <bag name="students" inverse="true" table="t_stu_teach">
+            <!-- key表示教师的主键在中间表中的外键名字 -->
+            <key column="teach_id"/>
+            <!--
+                class指的是集合中对应的类
+                column指的是
+            -->
+            <many-to-many class="Student" column="stu_id"/>
+        </bag>
+    </class>
+    
+</hibernate-mapping>

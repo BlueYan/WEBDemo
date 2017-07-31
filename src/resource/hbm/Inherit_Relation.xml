@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!--
+    继承关系
+-->
+<hibernate-mapping package="com.mark.project.hibernateDemo.inherit_relation.domain">
+
+    <!--
+        父类
+        discriminator-value：指的是创建的名为type的那列字段，在存储user用户的资料时候，该值是1
+        也就是为每个不同用户提供一个标记位
+    -->
+    <class name="User" table="user" discriminator-value="1">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+        <!--
+            鉴别器：用于在生成一张表的时候，多加一个type字段区分表中用户和客户
+            必须放在id节点后面
+        -->
+        <discriminator column="type" type="java.lang.Integer"/>
+        <property name="name" column="name"/>
+
+        <!--
+            子类
+            这样配置会将所有的数据存储在同一张表里
+        -->
+        <subclass name="Customer" discriminator-value="2">
+            <property name="salary" column="salary"/>
+        </subclass>
+
+
+    </class>
+
+
+</hibernate-mapping>

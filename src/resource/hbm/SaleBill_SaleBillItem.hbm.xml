@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.mark.project.hibernateDemo.combination_relation.domain">
+
+    <!-- many方的对象 -->
+    <class name="SaleBillItem" table="t_sale_bill_item">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="name"/>
+        <property name="price" column="price"/>
+        <property name="num" column="num"/>
+        <!-- 多对一映射 -->
+        <many-to-one name="saleBill" column="sale_bill_id" class="SaleBill"/>
+    </class>
+
+
+    <!-- one方对象 -->
+    <class name="SaleBill" table="t_sale_bill">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="saleDate" column="saleDate"/>
+        <!--
+            cascade: 表示级联操作的选项
+            none：缺省值，表示不做任何级联操作
+            save-update：在主对象上面执行save/update的方法，级联的保存临时的从对象更新到游离状态的从对象
+            delete：在主对象上执行delete方法，级联的删除所有从对象(意味着删除某张单据，自然要删除单据上的所有明细。前提是两者有级联关系，存在外键约束)
+            all：save-update + delete的组合
+            delete-orphan：删除和主对象打破主从关系(也就是如果明细表存在单据表的外键，要直接从明细表中删除数据，是要把明细表中的外键约束去掉或者说
+            是要把外键的值去掉才可以)。
+            all-delete-orphan：all + delete-orphan的组合
+        -->
+        <bag name="billItems" inverse="true" cascade="all-delete-orphan">
+            <!-- key表示one方的外键在many方的表中所取得名字 column的值要与many方所配置的many-to-one的column的值一致 -->
+            <key column="sale_bill_id"/>
+            <!-- class指定many方的类 -->
+            <one-to-many class="SaleBillItem"/>
+        </bag>
+    </class>
+    
+</hibernate-mapping>

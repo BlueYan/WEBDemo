@@ -22,6 +22,18 @@
             <generator class="native"/>
         </id>
         <property name="name" column="name"/>
+        <!--
+            双向维护 one方也要配置many方的信息
+            在department类中，我们用集合list容器来存储employee对象。所以在配置文件我们用bag节点来配置。
+            如果我们使用了set集合的话，就用<set></set>节点.
+            inverse: 表示对维护表的权利进行转让，自身不再维护表之间的关系。由另一方进行维护。
+        -->
+        <bag name="employees" inverse="true">
+            <!-- key表示one方的外键在many方的表中所取得名字 column的值要与many方所配置的many-to-one的column的值一致 -->
+            <key column="dept_id"/>
+            <!-- class指定many方的类 -->
+            <one-to-many class="Employee"/>
+        </bag>
     </class>
     
 </hibernate-mapping>
