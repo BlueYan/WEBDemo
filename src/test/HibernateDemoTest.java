@@ -11,10 +11,7 @@ import com.mark.project.hibernateDemo.mapping_relation.domain.Department;
 import com.mark.project.hibernateDemo.query.domain.EmployeeVO;
 import com.mark.project.strut2.action.ParamAction;
 import com.mark.project.util.HibernateUtil;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.*;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Before;
@@ -728,7 +725,6 @@ public class HibernateDemoTest {
 	@Test
 	public void test4() {
 		Session session = HibernateUtil.getSession();
-
 		//hql
 		List<com.mark.project.hibernateDemo.query.domain.Employee> employees =
 				session.createQuery("SELECT e FROM Employee e ORDER BY e.salary").list();
