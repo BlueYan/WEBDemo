@@ -1,13 +1,23 @@
-import com.mark.project.springDemo.day01.domain.HelloWorld;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mark.project.springDemo.day01.domain.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by Mark_Yan on 2017/8/1.
@@ -15,8 +25,16 @@ import java.beans.PropertyDescriptor;
  * SpringDemo测试类
  *
  */
+//告诉JVM Spring运行在JUnit上
+@RunWith(SpringJUnit4ClassRunner.class)
+//表示要去哪个路径下加载哪一个配置的文件
+@ContextConfiguration({"classpath:spring/helloworld.xml", "classpath:spring/Properties.xml",
+		               "classpath:spring/datasource.xml"})
 public class SpringDemoTest {
-
+//	@Autowired //自动装配 先会根据类型去到配置文件中到对应的类，如果没有找到就会根据名字查找
+//	HelloWorld helloWorld = null;
+	@Autowired
+	ApplicationContext ctx;
 
 	@Test
 	public void testHelloWorld() {
@@ -47,6 +65,66 @@ public class SpringDemoTest {
 		}
 		HelloWorld helloWorld = (HelloWorld) obj;
 		helloWorld.say();
+	}
+
+//	@Test
+//	public void testSpringTest() {
+//		helloWorld.say();
+//	}
+
+	@Test
+	public void testConstructor() {
+		HelloWorld hw = ctx.getBean("helloWorld", HelloWorld.class);
+		System.out.println(hw);
+	}
+
+	@Test
+	public void testStaticFactory() {
+		SomeBean sb = ctx.getBean("someBean", SomeBean.class);
+		System.out.println(sb);
+	}
+
+
+	@Test
+	public void testInstanceFactory() {
+		SomeBean sb = ctx.getBean("someBean1", SomeBean.class);
+		System.out.println(sb);
+	}
+
+	@Test
+	public void testFactoryBean() {
+		SomeBean sb = ctx.getBean("someBean2", SomeBean.class);
+		System.out.println(sb);
+	}
+
+	@Test
+	public void testSetterProperties() {
+		Employee e = ctx.getBean("employee", Employee.class);
+		System.out.println(e);
+	}
+
+	@Test
+	public void testSetterObj() {
+		Student student = ctx.getBean("student", Student.class);
+		System.out.println(student);
+	}
+
+	@Test
+	public void testCollection(){
+		CollectionBean collectionBean = ctx.getBean("collectionBean", CollectionBean.class);
+		System.out.println(collectionBean);
+	}
+
+	@Test
+	public void testDataSource() throws Exception {
+		DataSource ds = ctx.getBean("source", DruidDataSource.class);
+		Connection conn = ds.getConnection();
+		ResultSet rs = conn.prepareStatement("SELECT * FROM t_employee").executeQuery();
+		while (rs.next()) {
+			System.out.println(rs.getString("name"));
+		}
+		rs.close();
+		conn.close();
 	}
 
 }

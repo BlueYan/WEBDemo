@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 通过setter方式进行属性的注入
+         实体类中提供setter方法
+    -->
+
+    <!--
+        注入对象是基本类型
+    -->
+    <bean class="com.mark.project.springDemo.day01.domain.Employee" id="employee">
+        <property name="name" value="Mark"/>
+        <property name="age" value="18"/>
+        <property name="salary" value="200"/>
+    </bean>
+
+    <!--
+        注入对象是其他类型的对象
+    -->
+    <bean class="com.mark.project.springDemo.day01.domain.Student" id="student">
+        <property name="teacher" ref="teacher"/>
+    </bean>
+    <bean class="com.mark.project.springDemo.day01.domain.Teacher" id="teacher">
+        <property name="name" value="波多野结衣"/>
+    </bean>
+
+    <!--
+        注入属性是集合属性
+    -->
+    <bean class="com.mark.project.springDemo.day01.domain.CollectionBean" id="collectionBean">
+        <property name="set">
+            <set>
+                <value>set1</value>
+                <value>set2</value>
+                <value>set3</value>
+                <value>set1</value> <!-- 由于set集合不允许出现重复 会自动帮我们去重 -->
+            </set>
+        </property>
+
+        <property name="list">
+            <list>
+                <value>list1</value>
+                <value>list2</value>
+                <value>list3</value>
+                <value>list4</value>
+                <value>list1</value>
+            </list>
+        </property>
+
+        <property name="map">
+            <map>
+                <entry key="key1" value="val1"/>
+                <entry key="key2" value="val2"/>
+                <entry key="key3" value="val3"/>
+            </map>
+        </property>
+
+        <property name="array">
+            <array>
+                <value>array1</value>
+                <value>array2</value>
+                <value>array3</value>
+            </array>
+        </property>
+
+        <property name="prop">
+            <props>
+                <prop key="prop1">val1</prop>
+                <prop key="prop2">val2</prop>
+                <prop key="prop3">val3</prop>
+            </props>
+
+            <!-- 特殊写法
+            <value>
+                prop1 = val1
+                prop2 = val2
+            </value>
+            -->
+        </property>
+    </bean>
+
+</beans>

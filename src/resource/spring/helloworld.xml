@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="com.mark.project.springDemo.day01.domain.HelloWorld" id="helloWorld">
+        <property name="name" value="Mark"/>
+    </bean>
+
+    <!--
+        使用静态的工厂方式获取bean对象
+        id：指的是对应的bean对象
+        factory-method：指的是静态工厂的获取bean方法
+    -->
+    <bean class="com.mark.project.springDemo.day01.domain.SomeBeanFactory" id="someBean" factory-method="getSomeBean"/>
+
+    <!--
+        利用实例工厂方法获取bean对象
+    -->
+    <bean class="com.mark.project.springDemo.day01.domain.SomeBeanInstanceFactory" id="instanceFactory"/>
+    <!--
+        提供一个bean配置
+        factory-bean：表示实例工厂对象
+        factory-method：表示实例工厂获取bean的方法
+    -->
+    <bean id="someBean1" factory-bean="instanceFactory" factory-method="getSomeBean"/>
+
+    <!-- 实现FactoryBean接口 -->
+    <bean id="someBean2" class="com.mark.project.springDemo.day01.domain.SomeBeanFactoryBean"/>
+
+</beans>
