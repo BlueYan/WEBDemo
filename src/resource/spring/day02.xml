@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--
+        Autowired注入
+    -->
+    <bean class="com.mark.project.springDemo.day02.auto_wire_method.auto_wire.OtherBean1" id="otherBean1"/>
+    <bean class="com.mark.project.springDemo.day02.auto_wire_method.auto_wire.OtherBean2" id="otherBean2"/>
+    <bean class="com.mark.project.springDemo.day02.auto_wire_method.auto_wire.SomeBean" id="someBean"/>
+
+    <!--
+        Resource标签注入
+    -->
+    <bean class="com.mark.project.springDemo.day02.auto_wire_method.resource.Test1" id="test1"/>
+    <bean class="com.mark.project.springDemo.day02.auto_wire_method.resource.Test2" id="test22"/>
+
+    <!--
+        IoC注解配置
+        表示要到哪一个包下进行扫描
+
+    <context:component-scan base-package="com.mark.project.springDemo.day02.iocAnno"/>
+    -->
+    <!--
+        静态代理机制
+        配置bean的class对象时候,不能用接口或者是abstract类
+    -->
+    <bean class="com.mark.project.springDemo.day02.staticProxy.dao.impl.PersonDAOImpl" id="personDAOImpl"/>
+    <bean class="com.mark.project.springDemo.day02.staticProxy.service.impl.PersonServiceImpl" id="personServiceImpl">
+        <property name="personDAO" ref="personDAOImpl"/>
+    </bean>
+    <bean class="com.mark.project.util.TransactionManager" id="txManager"/>
+    <bean class="com.mark.project.springDemo.day02.staticProxy.service.impl.PersonServiceStaticProxyImpl" id="serviceStaticProxy">
+        <property name="txManager" ref="txManager"/>
+        <property name="service" ref="personServiceImpl"/>
+    </bean>
+
+
+    <!--
+        动态代理机制
+    -->
+    <bean class="com.mark.project.springDemo.day02.dynamicProxy.JDKProxy" id="proxy">
+        <property name="txManager" ref="txManager"/>
+        <property name="obj" ref="personServiceImpl"/> <!-- 引用我们真实对象 -->
+    </bean>
+
+</beans>

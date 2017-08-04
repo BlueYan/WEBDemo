@@ -7,4 +7,6 @@
     <import resource="classpath:spring/helloworld.xml"/>
     <import resource="classpath:spring/Properties.xml"/>
     <import resource="classpath:spring/datasource.xml"/>
+    <import resource="classpath:spring/day02.xml"/>
+
 </beans>

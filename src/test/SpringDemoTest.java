@@ -1,9 +1,19 @@
 import com.alibaba.druid.pool.DruidDataSource;
 import com.mark.project.springDemo.day01.domain.*;
+import com.mark.project.springDemo.day01.domain.SomeBean;
+import com.mark.project.springDemo.day02.auto_wire_method.auto_wire.*;
+import com.mark.project.springDemo.day02.auto_wire_method.resource.Test1;
+import com.mark.project.springDemo.day02.dynamicProxy.JDKProxy;
+import com.mark.project.springDemo.day02.iocAnno.AnnoTest;
+import com.mark.project.springDemo.day02.staticProxy.domain.Person;
+import com.mark.project.springDemo.day02.staticProxy.service.IPersonService;
+import com.mark.project.springDemo.day02.staticProxy.service.impl.PersonServiceImpl;
+import lombok.ToString;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -29,7 +39,7 @@ import java.sql.SQLException;
 @RunWith(SpringJUnit4ClassRunner.class)
 //表示要去哪个路径下加载哪一个配置的文件
 @ContextConfiguration({"classpath:spring/helloworld.xml", "classpath:spring/Properties.xml",
-		               "classpath:spring/datasource.xml"})
+		               "classpath:spring/datasource.xml", "classpath:spring/day02.xml"})
 public class SpringDemoTest {
 //	@Autowired //自动装配 先会根据类型去到配置文件中到对应的类，如果没有找到就会根据名字查找
 //	HelloWorld helloWorld = null;
@@ -125,6 +135,51 @@ public class SpringDemoTest {
 		}
 		rs.close();
 		conn.close();
+	}
+
+
+	@Test
+	public void testAutowired() {
+		com.mark.project.springDemo.day02.auto_wire_method.auto_wire.SomeBean someBean
+				= ctx.getBean("someBean", com.mark.project.springDemo.day02.auto_wire_method.auto_wire.SomeBean.class);
+		System.out.println(someBean);
+	}
+
+	@javax.annotation.Resource
+	Test1 test1;
+
+	@Test
+	public void testResource() {
+		System.out.println(test1);
+	}
+
+	@Test
+	public void testIoC() {
+		AnnoTest test = ctx.getBean("annoTest", AnnoTest.class);
+		test.doWork();
+	}
+
+	//由于我们增加了代理 并且代理也实现了IPersonService接口 根据面向接口编程 我们要让接口注入的实现类是PersonServiceStaticProxyImpl
+	@Autowired
+	@Qualifier("serviceStaticProxy") //根据类型和名字去查找 这样就会找到PersonServiceStaticProxyImpl
+	private IPersonService personServiceImpl;
+
+
+	/**
+	 * 1.在PersonServiceImpl类中,给DAO和TxManager提供Setter方法,但是配置文件中不对其配置property,执行测试不报错.
+	 */
+	@Test
+	public void testStaticProxy() {
+		//IPersonService personService = ctx.getBean("personServiceImpl", PersonServiceImpl.class);
+		personServiceImpl.save(new Person("Mark"));
+	}
+
+	@Autowired
+	private JDKProxy proxy;
+	@Test
+	public void testDynamicProxy() {
+		IPersonService personService = proxy.getObject();
+		personService.save(new Person("Tom"));
 	}
 
 }
