@@ -30,5 +30,6 @@ public class PersonServiceImpl implements IPersonService {
 	public void update(Person person) {
 		System.out.println("真实对象开始更新用户业务开始");
 		personDAO.update(person);
+		throw new RuntimeException("异常出现");
 	}
 }

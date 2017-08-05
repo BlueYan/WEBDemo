@@ -20,11 +20,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import sun.misc.ProxyGenerator;
 
 import javax.sql.DataSource;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +42,8 @@ import java.sql.SQLException;
 @RunWith(SpringJUnit4ClassRunner.class)
 //表示要去哪个路径下加载哪一个配置的文件
 @ContextConfiguration({"classpath:spring/helloworld.xml", "classpath:spring/Properties.xml",
-		               "classpath:spring/datasource.xml", "classpath:spring/day02.xml"})
+		               "classpath:spring/datasource.xml",
+		               "classpath:spring/aopConfig.xml"})
 public class SpringDemoTest {
 //	@Autowired //自动装配 先会根据类型去到配置文件中到对应的类，如果没有找到就会根据名字查找
 //	HelloWorld helloWorld = null;
@@ -145,13 +149,13 @@ public class SpringDemoTest {
 		System.out.println(someBean);
 	}
 
-	@javax.annotation.Resource
-	Test1 test1;
-
-	@Test
-	public void testResource() {
-		System.out.println(test1);
-	}
+//	@javax.annotation.Resource
+//	Test1 test1;
+//
+//	@Test
+//	public void testResource() {
+//		System.out.println(test1);
+//	}
 
 	@Test
 	public void testIoC() {
@@ -159,27 +163,64 @@ public class SpringDemoTest {
 		test.doWork();
 	}
 
-	//由于我们增加了代理 并且代理也实现了IPersonService接口 根据面向接口编程 我们要让接口注入的实现类是PersonServiceStaticProxyImpl
-	@Autowired
-	@Qualifier("serviceStaticProxy") //根据类型和名字去查找 这样就会找到PersonServiceStaticProxyImpl
-	private IPersonService personServiceImpl;
+//	//由于我们增加了代理 并且代理也实现了IPersonService接口 根据面向接口编程 我们要让接口注入的实现类是PersonServiceStaticProxyImpl
+//	@Autowired
+//	@Qualifier("serviceStaticProxy") //根据类型和名字去查找 这样就会找到PersonServiceStaticProxyImpl
+//	private IPersonService personServiceImpl;
+//
+//
+//	/**
+//	 * 1.在PersonServiceImpl类中,给DAO和TxManager提供Setter方法,但是配置文件中不对其配置property,执行测试不报错.
+//	 */
+//	@Test
+//	public void testStaticProxy() {
+//		//IPersonService personService = ctx.getBean("personServiceImpl", PersonServiceImpl.class);
+//		personServiceImpl.save(new Person("Mark"));
+//	}
+//
+//	@Autowired
+//	private JDKProxy proxy;
+//	@Test
+//	public void testDynamicProxy() {
+//		IPersonService personService = proxy.getObject();
+//		personService.save(new Person("Tom"));
+//		saveProxyClass("D:/proxy.class", personService.getClass().getName(), personService.getClass().getInterfaces()); //保存创建出来的动态代理类
+//	}
 
+	public static boolean saveProxyClass(String path, String proxyClassName, Class[] interfaces) {
+		if (proxyClassName == null || path == null) {
+			return false;
+		}
 
-	/**
-	 * 1.在PersonServiceImpl类中,给DAO和TxManager提供Setter方法,但是配置文件中不对其配置property,执行测试不报错.
-	 */
-	@Test
-	public void testStaticProxy() {
-		//IPersonService personService = ctx.getBean("personServiceImpl", PersonServiceImpl.class);
-		personServiceImpl.save(new Person("Mark"));
+		// get byte of proxy class
+		byte[] classFile = ProxyGenerator.generateProxyClass(proxyClassName, interfaces);
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(path);
+			out.write(classFile);
+			out.flush();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
+
 	@Autowired
-	private JDKProxy proxy;
+	private IPersonService personService;
 	@Test
-	public void testDynamicProxy() {
-		IPersonService personService = proxy.getObject();
-		personService.save(new Person("Tom"));
+	public void testAOP() {
+		//personService.save(new Person("Lucy"));
+		personService.update(new Person("Tim"));
 	}
+
+
 
 }

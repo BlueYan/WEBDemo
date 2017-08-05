@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--
+        AOP面向切面编程 使用xml配置
+    -->
+    <!-- 配置domain包的实体类 -->
+    <bean class="com.mark.project.springDemo.day02.staticProxy.domain.Person" id="person"/>
+    <!-- 配置dao -->
+    <bean class="com.mark.project.springDemo.day02.staticProxy.dao.impl.PersonDAOImpl" id="personDAO"/>
+    <!-- 配置service -->
+    <bean class="com.mark.project.springDemo.day02.staticProxy.service.impl.PersonServiceImpl" id="personService">
+        <property name="personDAO" ref="personDAO"/>
+    </bean>
+    <!-- 配置增加操作 -->
+    <bean class="com.mark.project.util.TransactionManager" id="txManager"/>
+    <!-- aop配置 -->
+    <aop:config>
+        <!--
+            aop:pointcut 指的是切入点.也就是要在什么类或者方法上进行切入.
+            expression: 指的是表达式
+                        * com.mark.project.springDemo.day02.staticProxy.*Service.*(..)
+                        * : 指的是所有的修饰符 public protected private
+                        com.mark.project.springDemo.day02.staticProxy.*Service.*: 指的是该包下的所有以Service结尾的所有方法
+                        (..): 指的是方法参数
+            id: 指的是名称
+        -->
+        <aop:pointcut id="servicePointCut" expression="execution(* com.mark.project.springDemo.day02.staticProxy.service.*Service.*(..))"/>
+        <!-- 
+            aop:aspect: 指的是切面 ref表示要关联的增加功能 
+            例如在service上需要增加对事务的操作 但是却不放在业务层上,也就是说明在业务执行方法前后有事务的操作功能
+        -->
+        <aop:aspect ref="txManager">
+            <!-- 
+                method: 表示service业务方法开始前 会先执行openTransaction方法.
+                pointcut-ref: 指的是要指引是到哪个位置把该openTransaction方法加入
+            -->
+            <aop:before method="openTransaction" pointcut-ref="servicePointCut"/>
+            <!--
+                表示在方法之后
+            -->
+            <aop:after-returning method="closeTransaction" pointcut-ref="servicePointCut"/>
+            <!-- 表示抛出异常后进行回滚 -->
+            <aop:after-throwing method="rollbackTransaction" pointcut-ref="servicePointCut"/>
+        </aop:aspect>
+    </aop:config>
+
+</beans>
