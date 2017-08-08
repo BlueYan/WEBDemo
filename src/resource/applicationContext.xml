@@ -9,4 +9,7 @@
     <import resource="classpath:spring/datasource.xml"/>
     <import resource="classpath:spring/day02.xml"/>
     <import resource="classpath:spring/aopConfig.xml"/>
+    <import resource="classpath:spring/aopAnno.xml"/>
+    <import resource="classpath:spring/day03.xml"/>
+    <import resource="classpath:spring/day03_txanno.xml"/>
 </beans>

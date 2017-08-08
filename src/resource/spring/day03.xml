@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 自动扫描 -->
+    <context:component-scan base-package="com.mark.project.springDemo.day03.tx"/>
+    <!-- 用于加载配置文件 -->
+    <context:property-placeholder location="db/db.properties"/>
+
+    <!--
+        配置初始化方法和销毁方法
+    -->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="source" init-method="init" destroy-method="close">
+        <!--
+            配置连接池基本属性
+        -->
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--
+        由于dao的实现类继承了JdbcDaoSupport 我们需要为其父类中的DataSource提供参数.
+        所以在EmployeeDAOImpl实现类中用Repository标签注解注入.
+        要手动设置.
+    -->
+    <!--<bean class="com.mark.project.springDemo.day03.jdbc.dao.impl.EmployeeDAOImpl" id="employeeDAOImpl">-->
+        <!--<property name="dataSource" ref="source"/>-->
+    <!--</bean>-->
+
+    <!--
+        利用AOP面向切面技术来配置springJDBC所需要的事务管理器
+    -->
+    <!--
+        首先我们需要根据不同的平台来选择对应的事务管理器
+        TransactionManager
+        这是我们要从切入点中添加进去的功能
+        JDBC和MyBatis我们选择用DataSourceTransactionManager来作为事务管理器
+        并且需要为其设置一个DataSource
+    -->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="source"/>
+    </bean>
+
+    <!--
+        我们在进行dao层的数据操作的时候,一般在DML操作都会在最开始时候开始事务,完成无误提交事务,如果出现异常等现象就进行回滚.
+        例如:
+            try {
+               beginTransaction();
+               dao.save();
+               commit;
+            } catch() {
+
+            } finally {
+               rollBack();
+            }
+        在service层都会出现这些代码,如果我们有多个service的话,那就要不断的重复写事务的操作.
+        所以我们希望事务的操作能以切入的方式,将其切入到beginTransaction和commit以及rollBack这三个地方.
+        这部分的增强一般是需要我们自己手动写的,但是spring帮我们做了管理.抽取层模板.
+
+        tx:advice节点就是用于配置连接我们事务管理器以及配置在service中那个方法进行事务操作.
+        id: 表示名字
+        transaction-manager: 指的是我们配置的事务管理器
+    -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--
+                tx:method: 指的是service中哪一个方法进行切入,进行事务操作
+            -->
+            <tx:method name="trans"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- AOP相关的配置 -->
+    <aop:config>
+        <!-- 配置切入点 -->
+        <aop:pointcut id="servicePointcut"
+                      expression="execution(* com.mark.project.springDemo.day03.tx.service.IAccountService.*(..))"/>
+        <!--
+            配置在那些地方需要用到事务
+            将切入点和事务管理器关联
+         -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="servicePointcut"/>
+    </aop:config>
+
+
+    <tx:advice id="crudAdvice" transaction-manager="transactionManager">
+
+        <tx:attributes>
+            <!-- 匹配查询相关的 -->
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="list*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <!-- 匹配非查询的 -->
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+
+    </tx:advice>
+
+</beans>

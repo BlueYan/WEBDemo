@@ -1,19 +1,18 @@
 import com.alibaba.druid.pool.DruidDataSource;
 import com.mark.project.springDemo.day01.domain.*;
 import com.mark.project.springDemo.day01.domain.SomeBean;
-import com.mark.project.springDemo.day02.auto_wire_method.auto_wire.*;
-import com.mark.project.springDemo.day02.auto_wire_method.resource.Test1;
-import com.mark.project.springDemo.day02.dynamicProxy.JDKProxy;
+import com.mark.project.springDemo.day02.aopTest.domain.Product;
+import com.mark.project.springDemo.day02.aopTest.service.IProductService;
 import com.mark.project.springDemo.day02.iocAnno.AnnoTest;
 import com.mark.project.springDemo.day02.staticProxy.domain.Person;
 import com.mark.project.springDemo.day02.staticProxy.service.IPersonService;
-import com.mark.project.springDemo.day02.staticProxy.service.impl.PersonServiceImpl;
-import lombok.ToString;
+import com.mark.project.springDemo.day03.jdbc.dao.IEmployeeDAO;
+import com.mark.project.springDemo.day03.jdbc.domain.Emp;
+import com.mark.project.springDemo.day03.tx.service.IAccountService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -28,9 +27,11 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Mark_Yan on 2017/8/1.
@@ -43,7 +44,8 @@ import java.sql.SQLException;
 //表示要去哪个路径下加载哪一个配置的文件
 @ContextConfiguration({"classpath:spring/helloworld.xml", "classpath:spring/Properties.xml",
 		               "classpath:spring/datasource.xml",
-		               "classpath:spring/aopConfig.xml"})
+		               "classpath:spring/aopConfig.xml", "classpath:spring/aopAnno.xml",
+		               "classpath:spring/day03.xml", "classpath:spring/day03_txanno.xml"})
 public class SpringDemoTest {
 //	@Autowired //自动装配 先会根据类型去到配置文件中到对应的类，如果没有找到就会根据名字查找
 //	HelloWorld helloWorld = null;
@@ -221,6 +223,55 @@ public class SpringDemoTest {
 		personService.update(new Person("Tim"));
 	}
 
+	@Autowired
+	private IProductService productService;
+	@Test
+	public void testAOPAnnoSave() {
+		productService.save(new Product("iPhone8"));
+	}
 
+	//@Autowired
+	private IEmployeeDAO employeeDAOImpl;
 
+	/**
+	 * java.lang.NoClassDefFoundError: org/springframework/core/MethodClassKey
+	 */
+	@Test
+	public void testSave() {
+		employeeDAOImpl.save(new Emp("Eva", new BigDecimal("500"), new Date()));
+	}
+
+	@Test
+	public void testDel() {
+		employeeDAOImpl.delete(8L);
+	}
+
+	@Test
+	public void testList() {
+		List<Emp> emps = employeeDAOImpl.list();
+		for (Emp e: emps ) {
+			System.out.println(e);
+		}
+	}
+
+	@Test
+	public void testGet() {
+		Emp emp = employeeDAOImpl.get(1L);
+		System.out.println(emp);
+	}
+
+//	@Autowired
+//	private IAccountService accountServiceImpl;
+//	@Test
+//	public void testTrans() {
+//		accountServiceImpl.trans(10086L, 10010L, 1000);
+//	}
+
+	@Autowired
+	private com.mark.project.springDemo.day03.txAnno.service.IAccountService accountService;
+
+	@Test
+	public void testTransAnno() {
+		accountService.trans(10086L, 10010L, 1000);
+	}
 }
