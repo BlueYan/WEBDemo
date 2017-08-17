@@ -1,47 +1,85 @@
 <!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+    <display-name>Archetype Created Web Application</display-name>
 
-  <!-- 配置struts2 -->
-  <filter>
-    <filter-name>struts2</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
-  </filter>
+    <!-- 配置struts2 -->
+    <!--<filter>-->
+    <!--<filter-name>struts2</filter-name>-->
+    <!--<filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>-->
+    <!--</filter>-->
 
-  <filter-mapping>
-    <filter-name>struts2</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
+    <!--<filter-mapping>-->
+    <!--<filter-name>struts2</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
 
-  <!--<filter>-->
+    <!--<filter>-->
     <!--<filter-name>HelloFilter</filter-name>-->
     <!--<filter-class>com.mark.servlet.HelloFilter</filter-class>-->
-  <!--</filter>-->
-  <!--<filter-mapping>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
     <!--<filter-name>HelloFilter</filter-name>-->
     <!--<url-pattern>/hello</url-pattern>-->
-  <!--</filter-mapping>-->
+    <!--</filter-mapping>-->
 
 
+    <!-- 配置对应的Servlet信息 -->
+    <!--<servlet>-->
+    <!--<servlet-name>HelloServlet</servlet-name>-->
+    <!--<servlet-class>com.mark.servlet.HelloServlet</servlet-class>-->
+    <!--</servlet>-->
 
-  <!-- 配置对应的Servlet信息 -->
-  <servlet>
-    <servlet-name>HelloServlet</servlet-name>
-    <servlet-class>com.mark.servlet.HelloServlet</servlet-class>
-  </servlet>
+    <!-- 配置Servlet映射关系
+        <url-pattern></url-pattern>
+        必须要以'/'开头
+    -->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>HelloServlet</servlet-name>-->
+    <!--<url-pattern>/hello</url-pattern>-->
+    <!--</servlet-mapping>-->
 
-  <!-- 配置Servlet映射关系
-      <url-pattern></url-pattern>
-      必须要以'/'开头
-  -->
-  <servlet-mapping>
-    <servlet-name>HelloServlet</servlet-name>
-    <url-pattern>/hello</url-pattern>
-  </servlet-mapping>
+    <!--
+        配置编码过滤器
+    -->
+    <filter>
+        <filter-name>characterEncoding</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <!-- 指定是哪一种 编码 -->
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncoding</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
+    <!-- 配置相关的分发器 -->
+    <servlet>
+        <servlet-name>SpringMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <!--
+                配置contextConfigLocation的目的是为了让DispatcherServlet去以下路径寻找配置文件classpath:applicationContext.xml
+                因为默认会去/WEB-INF/这个路径下寻找SpringMVC-servlet.xml文件.
+            -->
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+        <!--
+            表示在服务器启动的时候就去加载applicationContext.xml文件中的bean
+            数字越低，优先级越高
+        -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SpringMVC</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
 
 

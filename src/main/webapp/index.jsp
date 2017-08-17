@@ -11,6 +11,6 @@
 <h2>Hello World!</h2>
 
 名字: ${requestScope.get("name")}
-
+${msg}
 </body>
 </html>
