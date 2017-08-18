@@ -52,7 +52,7 @@ public class User {
         this.soce = soce;
     }
 
-    private User() {
+    public User() {
 
     }
 

@@ -27,4 +27,37 @@
 
     <mvc:annotation-driven></mvc:annotation-driven>
 
+    <mvc:default-servlet-handler/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+        <!-- 
+            配置文件上传的最大大小
+        -->
+        <property name="maxUploadSize">
+            <value>1048576</value>
+        </property>
+    </bean>
+
+    <!--
+        配置拦截器
+    -->
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--
+                配置要拦截的路径 /*表示有的请求 但是只是一级
+                如果要拦截多级(/pss/login) 只能配置/**
+             -->
+            <mvc:mapping path="/*"/>
+            <bean class="com.mark.project.springMVCDemo.MyInterceptor"/>
+            <!-- 配置不拦截的路径 -->
+            <mvc:exclude-mapping path="/data"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 </beans>
