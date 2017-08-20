@@ -39,5 +39,13 @@ ${msg}
 
 <button type="button" onclick="onTest()">测试</button>
 
+<form action="/param2" method="post">
+    <input type="text" name="username"/> <br/>
+
+    <input type="submit" value="提交"/>
+
+
+</form>
+
 </body>
 </html>

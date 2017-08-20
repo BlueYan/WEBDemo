@@ -17,7 +17,7 @@ public class MyInterceptor implements HandlerInterceptor {
 	//在控制器方法之前之前调用,如果返回false表示拦截请求,如果为true，放行请求
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o)
 			throws Exception {
-		return false;
+		return true;
 	}
 
 	//在控制器执行完方法后视图结合之前调用
