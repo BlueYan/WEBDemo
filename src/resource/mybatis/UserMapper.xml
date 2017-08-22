@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mark.project.MyBatisDemo.mapper.UserMapper">
+
+    <!--
+        id：表示唯一编号，与namespace结合来表示唯一
+        parameterType: 表示请求的参数类型
+        keyColumn: 表示数据库表中的自增唯一id
+        keyProperty: 表示数据表中自增字段回显到对象中的那个属性
+        useGeneratedKeys: 表示使用数据库中自增策略将自增的值回显到对象属性中
+        INSERT INTO t_user(name, age) VALUES (#{name}, #{age})
+        name age 表示数据表中对应的字段
+        #{age} #{name} 表示实体类中的属性字段
+    -->
+    <insert id="save" parameterType="Account"
+            keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO t_user(name, age) VALUES (#{name}, #{age})
+    </insert>
+
+    <!--
+        更新操作
+    -->
+    <update id="update" parameterType="com.mark.project.MyBatisDemo.domain.Account">
+        UPDATE t_user SET name = #{name}, age = #{age} WHERE id = #{id}
+    </update>
+
+    <!--
+        删除操作只要传入Long类型的id
+    -->
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+
+
+    <!--
+        查询操作
+        resultType：表示返回的每一条数据要封装成什么对象
+    -->
+    <select id="get" parameterType="java.lang.Long" resultType="com.mark.project.MyBatisDemo.domain.Account">
+      SELECT * FROM t_user WHERE id = #{id}
+    </select>
+
+    <select id="list" resultType="com.mark.project.MyBatisDemo.domain.Account">
+        SELECT * FROM t_user
+    </select>
+
+</mapper>

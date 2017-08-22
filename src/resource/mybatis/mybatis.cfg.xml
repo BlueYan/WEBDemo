@@ -1,3 +1,45 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration
-        >
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <typeAliases>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Account" alias="Account"/>
+    </typeAliases>
+
+    <!--
+        配置多个数据库环境
+    -->
+    <environments default="default">
+        <!--
+            配置单个数据库环境
+        -->
+        <environment id="default">
+            <!--
+                配置事务管理器
+                type: 表示类型 JDBC表示一个别名
+            -->
+            <transactionManager type="JDBC"/>
+            <!--
+                配置数据源
+            -->
+            <dataSource type="POOLED">
+                <!--
+                    可以将以下这些属性抽取到properties文件中
+                    然后再通过
+                    <properties resource="properties路径"/> 加载进来
+                -->
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql:///test"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 添加配置文件 -->
+    <mappers>
+        <mapper resource="mybatis/UserMapper.xml"/>
+    </mappers>
+</configuration>
