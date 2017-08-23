@@ -82,4 +82,14 @@ public class MyBatisDemoTest {
         session.close();
     }
 
+
+    @Test
+    public void get2() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        UserMapper userMapper = session.getMapper(UserMapper.class);
+        Account account = userMapper.get(3L);
+        System.out.println(account);
+        session.close();
+    }
+
 }

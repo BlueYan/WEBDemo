@@ -31,13 +31,29 @@
         DELETE FROM t_user WHERE id = #{id}
     </delete>
 
+    <!--
+        使用resultMap
+        作用：为了解决查询出来的数据字段和我们实体类的属性不是同名的情况
+        id: 表示一个别名 在需要用到resultMap的查询中将别名写上
+        type：表示我们要对应的类型
+        <id>：表示主键字段
+        <result>： 表示非主键的字段
+        column：表示数据库中查询出来的字段名称
+        property：表示实体类对象中的属性名称
+    -->
+    <resultMap id="accountMap" type="com.mark.project.MyBatisDemo.domain.Account">
+        <id column="u_id" property="id"/>
+        <result column="u_name" property="name"/>
+        <result column="u_age" property="age"/>
+    </resultMap>
+
 
     <!--
         查询操作
         resultType：表示返回的每一条数据要封装成什么对象
     -->
-    <select id="get" parameterType="java.lang.Long" resultType="com.mark.project.MyBatisDemo.domain.Account">
-      SELECT * FROM t_user WHERE id = #{id}
+    <select id="get" parameterType="java.lang.Long" resultMap="accountMap">
+      SELECT u.id AS u_id, u.name AS u_name, u.age AS u_age FROM t_user AS u WHERE id = #{id}
     </select>
 
     <select id="list" resultType="com.mark.project.MyBatisDemo.domain.Account">
