@@ -6,7 +6,10 @@
 
     <typeAliases>
         <typeAlias type="com.mark.project.MyBatisDemo.domain.Account" alias="Account"/>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Employee" alias="Employee"/>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Department" alias="Department"/>
     </typeAliases>
+
 
     <!--
         配置多个数据库环境
@@ -41,5 +44,7 @@
     <!-- 添加配置文件 -->
     <mappers>
         <mapper resource="mybatis/UserMapper.xml"/>
+        <mapper resource="mybatis/EmployeeMapper.xml"/>
+        <mapper resource="mybatis/DepartmentMapper.xml"/>
     </mappers>
 </configuration>

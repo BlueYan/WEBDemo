@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mark.project.MyBatisDemo.mapper.EmployeeMapper">
+
+    <insert id="save" parameterType="com.mark.project.MyBatisDemo.domain.Employee"
+            keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO employee(name, dept_id) VALUES(#{name}, #{dept.id})
+    </insert>
+    
+
+    <!--
+        查询many方的数据
+
+    -->
+    <resultMap id="baseMap" type="Employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <!--
+            property: 表示one方在many方属性名称
+            column: 表示many方查询出one方的主键别名
+            select: 表示要查询的one方的方法。并且column的值作为参数传递进去
+            javaType: 返回的类型
+        -->
+        <association property="dept" column="dept_id" select="com.mark.project.MyBatisDemo.mapper.DepartmentMapper.get"
+            javaType="Department"/>
+    </resultMap>
+    
+    <select id="get" parameterType="long" resultMap="baseMap">
+        SELECT id, name, dept_id FROM employee WHERE id = #{id}
+    </select>
+
+
+</mapper>

@@ -60,4 +60,95 @@
         SELECT * FROM t_user
     </select>
 
+    <!--
+        动态拼接SQL
+    -->
+    <select id="queryByCondition" parameterType="com.mark.project.MyBatisDemo.query.QueryObject"
+            resultType="Account">
+
+        SELECT * FROM t_user
+        <!-- where标签 -->
+        <where>
+
+            <if test="keyword != null">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+
+            <if test="beginAge != null">
+                AND age &gt; #{beginAge}
+            </if>
+
+            <if test="endAge != null">
+                AND age &lt; ${endAge}
+            </if>
+
+        </where>
+
+    </select>
+
+
+    <update id="updateByCondition" parameterType="Account">
+        UPDATE t_user
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+
+            <if test="age != null">
+                age = ${age},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="queryForIn" resultType="Account" parameterType="long">
+        SELECT * FROM t_user WHERE id IN
+        <!--
+            collection：表示传递进来的集合 list或者array
+            open：表示以什么字符串作为开始
+            item：表示集合中的元素
+            close：表示以什么字符串结束
+            separator：表示以什么作为分割
+        -->
+        <foreach collection="list" open="(" item="item" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--
+        配置相同的sql语句
+    -->
+    <sql id="whereSql">
+        <where>
+            <if test="keyword != null">
+                name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="beginAge != null">
+                AND age &gt;= #{beginAge}
+            </if>
+            <if test="endAge != null">
+                AND age &lt;= #{endAge}
+            </if>
+        </where>
+    </sql>
+
+
+    <select id="queryForCount" resultType="long" parameterType="com.mark.project.MyBatisDemo.query.QueryObject">
+        SELECT COUNT(*) FROM t_user
+        <!-- 引入sql片段 -->
+        <include refid="whereSql"/>
+    </select>
+
+    <select id="queryForPage" resultType="Account" parameterType="com.mark.project.MyBatisDemo.query.QueryObject">
+        SELECT * FROM t_user
+        <include refid="whereSql"/>
+        <if test="currentPage != null">
+            LIMIT #{startPage}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="login" resultType="Account">
+        SELECT * FROM t_user WHERE name = #{username} AND password = #{password}
+    </select>
+
 </mapper>
