@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mark.project.MyBatisDemo.mapper.SupplierMapper">
+
+    <insert id="save" parameterType="Supplier" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO t_supplier(name) VALUES(#{name})
+    </insert>
+
+    <!--
+        由于是供应商来维护关系。所以更新中间表的操作放在供应商这里
+    -->
+    <insert id="saveMiddleData">
+        INSERT INTO t_product_supplier(product_id, supplier_id) VALUES(#{productID}, #{supplierID})
+    </insert>
+
+    <!--
+        封装查询的结果
+    -->
+    <resultMap id="baseMap" type="Supplier">
+        <id column="s_id" property="id"/>
+        <result column="s_name" property="name"/>
+        <collection property="products" ofType="Product">
+            <id column="p_id" property="id"/>
+            <result column="p_name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <!--
+        查询指定的供应商并且查询出该供应商所供应的商品
+
+    -->
+    <select id="select" parameterType="long" resultMap="baseMap">
+        SELECT s.id AS s_id, s.name AS s_name, p.id AS p_id, p.name AS p_name
+        FROM t_supplier AS s LEFT JOIN t_product_supplier AS ps ON s.id = ps.supplier_id
+        LEFT JOIN t_product AS p ON p.id = ps.product_id WHERE s.id = #{id}
+    </select>
+
+
+</mapper>

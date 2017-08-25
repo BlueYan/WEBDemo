@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mark.project.MyBatisDemo.mapper.StudentMapper">
+
+    <insert id="save" parameterType="Student" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO t_student(name) VALUES (#{name})
+    </insert>
+
+    <!--
+        one方在管理关系
+        所以我们要在插入数据后，让one方更新一下对应的外键
+    -->
+    <update id="updateForStuId">
+        UPDATE t_teacher SET stu_id = #{stuID} WHERE id = #{teacherID}
+    </update>
+
+    <!--
+        为了一并的查询出Teacher的数据
+        既查询当前学生有多少个老师
+        并且这里连同解决N+1问题.(解决的办法就是使用LEFT JOIN)
+
+    -->
+    <resultMap id="baseMap" type="Student">
+        <id column="s_id" property="id"/>
+        <result column="s_name" property="name"/>
+        <!--
+            Many方Teacher对象在One方Student是集合存储的
+            这里我们要使用Collection
+            property: 表示对象属性的名称
+            ofType：表示要返回的对象类型
+        -->
+        <collection property="teachers" ofType="Teacher">
+            <id column="t_id" property="id"/>
+            <result column="t_name" property="name"/>
+        </collection>
+
+    </resultMap>
+
+    <!--
+        根据id查询
+    -->
+    <select id="get" parameterType="long" resultMap="baseMap">
+        SELECT s.id AS s_id, s.name AS s_name, teach.id AS t_id, teach.name AS t_name
+FROM t_student AS s, t_teacher AS teach WHERE s.id = #{id} AND teach.stu_id = #{id};
+    </select>
+
+    <!--
+         查询出对应的Student数据
+         One方Student实体类管理着many方Teacher集合对象。
+         所以我们在查询出Student对象时候要连同Teacher的数据一并查询出来
+         原本SQL：SELECT id, name FROM t_student WHERE id = #{id}
+    -->
+    <select id="select" resultMap="baseMap">
+        SELECT s.id AS s_id, s.name AS s_name, teach.id AS t_id, teach.name AS t_name
+        FROM t_student AS s LEFT JOIN t_teacher AS teach ON s.id = teach.stu_id;
+    </select>
+
+    <!--
+        删除操作
+        在我们删除one方的某一条记录的时候，如果many方持有该one的数据，会因为外键约束而无法删除
+        解决的办法就是先去many中更新有one方对应的数据，将外键设置成null
+        再回来删除one方的数据
+    -->
+    <update id="updateRelation" parameterType="long">
+        UPDATE t_teacher SET stu_id = NULL WHERE stu_id = #{stuID}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM t_student WHERE id = #{id}
+    </delete>
+
+</mapper>

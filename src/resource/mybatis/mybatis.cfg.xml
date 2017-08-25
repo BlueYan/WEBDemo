@@ -4,10 +4,31 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
+    <settings>
+        <!--
+            全局启用或禁用延迟加载。当禁用时, 所有关联对象都会即时加载。
+            设置成true，关联的one方对象就会延迟加载
+        -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!--
+            当启用时, 有延迟加载属性的对象在被调用时将会完全加载任意属性。否则, 每种属性将会按需要加载。
+        -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!--
+            Object对象上面的哪些方法触发延迟加载。
+            默认：equals,clone,hashCode,toString
+        -->
+        <setting name="lazyLoadTriggerMethods" value="hashCode, equals, clone"/>
+    </settings>
+
     <typeAliases>
         <typeAlias type="com.mark.project.MyBatisDemo.domain.Account" alias="Account"/>
         <typeAlias type="com.mark.project.MyBatisDemo.domain.Employee" alias="Employee"/>
         <typeAlias type="com.mark.project.MyBatisDemo.domain.Department" alias="Department"/>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Teacher" alias="Teacher"/>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Student" alias="Student"/>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Product" alias="Product"/>
+        <typeAlias type="com.mark.project.MyBatisDemo.domain.Supplier" alias="Supplier"/>
     </typeAliases>
 
 
@@ -46,5 +67,9 @@
         <mapper resource="mybatis/UserMapper.xml"/>
         <mapper resource="mybatis/EmployeeMapper.xml"/>
         <mapper resource="mybatis/DepartmentMapper.xml"/>
+        <mapper resource="mybatis/TeacherMapper.xml"/>
+        <mapper resource="mybatis/StudentMapper.xml"/>
+        <mapper resource="mybatis/ProductMapper.xml"/>
+        <mapper resource="mybatis/SupplierMapper.xml"/>
     </mappers>
 </configuration>

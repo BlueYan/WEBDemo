@@ -24,10 +24,28 @@
         <association property="dept" column="dept_id" select="com.mark.project.MyBatisDemo.mapper.DepartmentMapper.get"
             javaType="Department"/>
     </resultMap>
-    
+
+    <resultMap id="selectMap" type="Employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <!--
+            直接写上对应的关联关系
+         -->
+        <association property="dept" javaType="Department">
+            <id column="d_id" property="id"/>
+            <result column="d_name" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="select" resultMap="selectMap">
+        SELECT e.id, e.name, d.id AS d_id, d.name AS d_name FROM employee e LEFT JOIN dept d ON e.id = d.id
+    </select>
+
     <select id="get" parameterType="long" resultMap="baseMap">
         SELECT id, name, dept_id FROM employee WHERE id = #{id}
     </select>
+
+
 
 
 </mapper>

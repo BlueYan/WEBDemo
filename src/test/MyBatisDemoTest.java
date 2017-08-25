@@ -1,13 +1,10 @@
 import com.mark.domain.User;
-import com.mark.project.MyBatisDemo.domain.Account;
-import com.mark.project.MyBatisDemo.domain.Department;
-import com.mark.project.MyBatisDemo.domain.Employee;
-import com.mark.project.MyBatisDemo.mapper.DepartmentMapper;
-import com.mark.project.MyBatisDemo.mapper.EmployeeMapper;
-import com.mark.project.MyBatisDemo.mapper.UserMapper;
+import com.mark.project.MyBatisDemo.domain.*;
+import com.mark.project.MyBatisDemo.mapper.*;
 import com.mark.project.MyBatisDemo.page.PageResult;
 import com.mark.project.MyBatisDemo.query.QueryObject;
 import com.mark.project.MyBatisDemo.service.impl.AccountServiceImpl;
+import com.mark.project.springDemo.day03.jdbc.domain.Emp;
 import com.mark.project.springDemo.day03.tx.service.IAccountService;
 import com.mark.project.util.MyBatisUtil;
 import org.apache.ibatis.io.Resources;
@@ -221,5 +218,149 @@ public class MyBatisDemoTest {
         System.out.println(em.getDept());
         session.close();
     }
+
+    @Test
+    public void testSelect() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        EmployeeMapper employeeMapper = session.getMapper(EmployeeMapper.class);
+        List<Employee> employees = employeeMapper.select();
+        for(Employee employee : employees ) {
+            System.out.println(employee);
+            System.out.println(employee.getDept());
+        }
+        session.close();
+    }
+
+    /**
+     *
+     * Student:Teacher = 1:多
+     * 由Student作为One方去管理
+     *
+     * 数据库：Teacher表持有Student的外键.但是我们的侧重点是one方，所以我们让one方去更新外键，而不是直接在many方更新外键
+     *
+     * Mapper文件：我们需要在One方的Mapper中添加更新Many方外键的SQL语句
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testOne2ManySave() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        StudentMapper studentMapper = session.getMapper(StudentMapper.class); //One
+        TeacherMapper teacherMapper = session.getMapper(TeacherMapper.class);
+
+        Teacher teacher = new Teacher();
+        teacher.setName("Jason");
+        Teacher teacher1 = new Teacher();
+        teacher.setName("Jason1");
+        Teacher teacher2 = new Teacher();
+        teacher.setName("Jason2");
+        Student student = new Student();
+        student.setName("Mark");
+        student.getTeachers().add(teacher);
+        student.getTeachers().add(teacher1);
+        student.getTeachers().add(teacher2);
+
+        studentMapper.save(student);
+        teacherMapper.save(teacher);
+        //one方做完新增后要对外键进行更新
+        for ( Teacher teach : student.getTeachers() ) {
+            studentMapper.updateForStuId(student.getId(), teach.getId());
+        }
+
+        session.commit();
+        session.close();
+    }
+
+
+    @Test
+    public void testOne2ManySelect() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        StudentMapper studentMapper = session.getMapper(StudentMapper.class);
+        List<Student> students = studentMapper.select();
+        for(Student stu : students ) {
+            List<Teacher> teachers = stu.getTeachers();
+            System.out.println(stu);
+            for ( Teacher teacher : teachers ) {
+                System.out.println(teacher);
+            }
+        }
+        session.close();
+    }
+
+    @Test
+    public void testOne2ManyGet() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        StudentMapper studentMapper = session.getMapper(StudentMapper.class);
+        Student student = studentMapper.get(1L);
+        System.out.println(student);
+        List<Teacher> teachers = student.getTeachers();
+        for(Teacher teacher : teachers ) {
+            System.out.println(teacher);
+        }
+        session.close();
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        StudentMapper studentMapper = session.getMapper(StudentMapper.class);
+        //先更新掉many方的外键约束
+        studentMapper.updateRelation(1L);
+        //在删除one方的数据
+        studentMapper.delete(1L);
+        session.commit();
+        session.close();
+    }
+
+
+    @Test
+    public void testMany2ManySave() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        ProductMapper productMapper = session.getMapper(ProductMapper.class);
+        SupplierMapper supplierMapper = session.getMapper(SupplierMapper.class);
+
+        //创建对象
+        Product product1 = new Product();
+        product1.setName("iPhone8");
+        Product product2 = new Product();
+        product2.setName("三星");
+
+        Supplier supplier1 = new Supplier();
+        supplier1.setName("苹果");
+        Supplier supplier2 = new Supplier();
+        supplier2.setName("富士康");
+        supplier1.getProducts().add(product1);
+        supplier1.getProducts().add(product2);
+        supplier2.getProducts().add(product1);
+        supplier2.getProducts().add(product2);
+
+        productMapper.save(product1);
+        productMapper.save(product2);
+        supplierMapper.save(supplier1);
+        supplierMapper.save(supplier2);
+        for (Product product : supplier1.getProducts()) {
+            supplierMapper.saveMiddleData(product.getId(), supplier1.getId());
+        }
+        for ( Product product : supplier2.getProducts() ) {
+            supplierMapper.saveMiddleData(product.getId(), supplier2.getId());
+        }
+        session.commit();
+        session.close();
+
+    }
+
+
+    @Test
+    public void select() throws Exception {
+        SqlSession session = MyBatisUtil.getSession();
+        SupplierMapper mapper = session.getMapper(SupplierMapper.class);
+        Supplier supplier = mapper.select(3L);
+        System.out.println(supplier);
+        for( Product product : supplier.getProducts() ) {
+            System.out.println(product);
+        }
+        session.close();
+    }
+
 
 }
