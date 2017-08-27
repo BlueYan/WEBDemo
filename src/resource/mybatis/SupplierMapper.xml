@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.mark.project.MyBatisDemo.mapper.SupplierMapper">
 
-    <insert id="save" parameterType="Supplier" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" parameterType="Supplier" keyColumn="id" keyProperty="id" useGeneratedKeys="true" flushCache="false">
         INSERT INTO t_supplier(name) VALUES(#{name})
     </insert>
 
@@ -29,7 +29,7 @@
         查询指定的供应商并且查询出该供应商所供应的商品
 
     -->
-    <select id="select" parameterType="long" resultMap="baseMap">
+    <select id="select" parameterType="long" resultMap="baseMap" useCache="false">
         SELECT s.id AS s_id, s.name AS s_name, p.id AS p_id, p.name AS p_name
         FROM t_supplier AS s LEFT JOIN t_product_supplier AS ps ON s.id = ps.supplier_id
         LEFT JOIN t_product AS p ON p.id = ps.product_id WHERE s.id = #{id}

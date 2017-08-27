@@ -6,14 +6,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- 导入每个模块下的配置文件 -->
-    <!--<import resource="classpath:spring/helloworld.xml"/>-->
-    <!--<import resource="classpath:spring/Properties.xml"/>-->
-    <!--<import resource="classpath:spring/datasource.xml"/>-->
-    <!--<import resource="classpath:spring/day02.xml"/>-->
-    <!--<import resource="classpath:spring/aopConfig.xml"/>-->
-    <!--<import resource="classpath:spring/aopAnno.xml"/>-->
-    <!--<import resource="classpath:spring/day03.xml"/>-->
-    <!--<import resource="classpath:spring/day03_txanno.xml"/>-->
+    <import resource="classpath:spring/helloworld.xml"/>
+    <import resource="classpath:spring/Properties.xml"/>
+    <import resource="classpath:spring/datasource.xml"/>
+    <import resource="classpath:spring/day02.xml"/>
+    <import resource="classpath:spring/aopConfig.xml"/>
+    <import resource="classpath:spring/aopAnno.xml"/>
+    <import resource="classpath:spring/day03.xml"/>
+    <import resource="classpath:spring/day03_txanno.xml"/>
 
     <!--
         配置Controller类
